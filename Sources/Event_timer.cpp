@@ -21,7 +21,6 @@ Event_timer_t::Event_timer_t(VOID_TIMER_t* VOID_TMR_ptr):Callback_Interface_t()
 	}
 	this->stopped = true;
 	this->queueProcessing = false;
-	
 }
 
 void Event_timer_t::void_callback(void* Intf_ptr, void* parameters)
@@ -56,9 +55,8 @@ void Event_timer_t::void_callback(void* Intf_ptr, void* parameters)
 	}
 	this->queueProcessing = false;
 	for(int i=0; i<Event_TMR_size_of_events;i++)
-	{
-		if(this->callbacks[i] != (Callback_Interface_t*)NULL) this->Start();
-	}
+		if(this->callbacks[i] != (Callback_Interface_t*)NULL)
+			this->Start();
 }
 
 
@@ -98,6 +96,7 @@ void Event_timer_t::Add_Cyclic_Event(uint32_t Period_us, Callback_Interface_t* C
 {
 	for(int i = 0; i < Event_TMR_size_of_events; i++)
 	{
+		__disable_irq();
 		if(this->callbacks[i] == (Callback_Interface_t*)NULL)
 		{
 			this->Event_data[i] = data;
@@ -107,8 +106,10 @@ void Event_timer_t::Add_Cyclic_Event(uint32_t Period_us, Callback_Interface_t* C
 			this->Event_period[i] = Period_us/this->step_us;
 			if(this->Event_period[i] == 0) this->Event_period[i] = 1;
 			if(this->stopped) this->Start();
+			__enable_irq();
 			break;
 		}
+		__enable_irq();
 	}
 }
 
@@ -116,6 +117,7 @@ void Event_timer_t::Add_OneTime_Event(uint32_t Delay_us, Callback_Interface_t* C
 {
 	for(int i = 0; i < Event_TMR_size_of_events; i++)
 	{
+		__disable_irq();
 		if(this->callbacks[i] == (Callback_Interface_t*)NULL)
 		{
 			this->Event_data[i] = data;
@@ -123,11 +125,12 @@ void Event_timer_t::Add_OneTime_Event(uint32_t Delay_us, Callback_Interface_t* C
 			this->Event_counter[i] = 0;
 			this->Event_one_time[i] = true;
 			this->Event_period[i] = Delay_us/this->step_us;
-//			this->added[i] = true;
 			if(this->Event_period[i] == 0) this->Event_period[i] = 1;
 			if(this->stopped) this->Start();
+			__enable_irq();
 			break;
 		}
+		__enable_irq();
 	}
 }
 

@@ -22,6 +22,7 @@ public:
 private:
 	uint32_t Event_bw;
 	uint32_t Event_br;
+	bool Event_ready[Event_TMR_size_of_events];
 };
 
 #endif /* KERNEL_PERFORMER_TMR_HPP_ */
