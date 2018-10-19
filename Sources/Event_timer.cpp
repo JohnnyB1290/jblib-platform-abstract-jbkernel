@@ -54,9 +54,14 @@ void Event_timer_t::void_callback(void* Intf_ptr, void* parameters)
 		}
 	}
 	this->queueProcessing = false;
-	for(int i=0; i<Event_TMR_size_of_events;i++)
-		if(this->callbacks[i] != (Callback_Interface_t*)NULL)
+	__disable_irq();
+	for(int i=0; i<Event_TMR_size_of_events;i++) {
+		if(this->callbacks[i] != (Callback_Interface_t*)NULL) {
 			this->Start();
+			break;
+		}
+	}
+	__enable_irq();
 }
 
 
