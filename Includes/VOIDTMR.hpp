@@ -24,7 +24,6 @@ public:
 	virtual void Reset(void) = 0;
 	virtual uint32_t GetCounter(void) = 0;
 	virtual void SetCounter(uint32_t count) = 0;
-	virtual void AddCall(VOID_CALLBACK_t IntCallback) = 0;
 	virtual void AddCall(Callback_Interface_t* IntCallback) = 0;
 	virtual void DeleteCall(void) = 0;
 	virtual void Deinitialize(void) = 0;
