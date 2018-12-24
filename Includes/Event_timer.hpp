@@ -26,6 +26,7 @@ public:
 	virtual void DeleteEvent(Callback_Interface_t* Callback, void* data);
 	virtual void DeleteEvent(Callback_Interface_t* Callback);
 	virtual void void_callback(void* Intf_ptr, void* parameters);
+	virtual uint16_t getEventsInQueue();
 protected:
 	VOID_TIMER_t* VOID_TMR_ptr;
 	uint32_t step_us;

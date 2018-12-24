@@ -140,6 +140,14 @@ void Time_Engine_t::NRT_setEvent(uint8_t module, uint32_t us, Callback_Interface
 	this->Event_tmr_ptrs[module]->Add_OneTime_Event(us, this, (void*)Event_timer_data_ptr);
 }
 
+uint16_t Time_Engine_t::getEventsInQueue(uint8_t module) {
+	if(this->Event_tmr_ptrs[module] == (Event_timer_t*)NULL)  {
+		return 0;
+	} else {
+		return this->Event_tmr_ptrs[module]->getEventsInQueue();
+	}
+}
+
 
 void Time_Engine_t::void_callback(void* Intf_ptr, void* parameters)
 {

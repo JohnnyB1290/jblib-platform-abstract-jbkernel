@@ -46,6 +46,7 @@ public:
 /*************************Delay and Performer*********************/
 	void Add_NRT_Timer(uint8_t timer_num, Event_timer_t* Event_tmr_ptr, uint32_t step_us);
 	void NRT_setEvent(uint8_t module, uint32_t us, Callback_Interface_t* call, void* data);
+	uint16_t getEventsInQueue(uint8_t timer_num);
 /*****************************************************************/
 	virtual void void_callback(void* Intf_ptr, void* parameters);
 private:

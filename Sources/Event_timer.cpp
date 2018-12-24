@@ -139,6 +139,14 @@ void Event_timer_t::Add_OneTime_Event(uint32_t Delay_us, Callback_Interface_t* C
 	}
 }
 
+uint16_t Event_timer_t::getEventsInQueue() {
+	uint16_t retValue = 0;
+	for(int i = 0; i < Event_TMR_size_of_events; i++) {
+		retValue += this->callbacks[i] != NULL;
+	}
+	return retValue;
+}
+
 void Event_timer_t::DeleteEvent(Callback_Interface_t* Callback)
 {
 	for(int i = 0; i < Event_TMR_size_of_events; i++)

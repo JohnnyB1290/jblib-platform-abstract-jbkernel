@@ -55,6 +55,10 @@ void Kernel_Performer_tmr_t::Add_OneTime_Event(uint32_t Delay_us, Callback_Inter
 	this->Start();
 }
 
+uint16_t Kernel_Performer_tmr_t::getEventsInQueue() {
+	return (this->Event_bw >= this->Event_br) ? (this->Event_bw - this->Event_br) : (Event_TMR_size_of_events - this->Event_br + this->Event_bw);
+}
+
 void Kernel_Performer_tmr_t::Add_Cyclic_Event(uint32_t Period_us, Callback_Interface_t* Callback, void* data){}
 void Kernel_Performer_tmr_t::DeleteEvent(Callback_Interface_t* Callback, void* data){}
 void Kernel_Performer_tmr_t::DeleteEvent(Callback_Interface_t* Callback){}
