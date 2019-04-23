@@ -5,6 +5,10 @@
  *      Author: Stalker1290
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include "Kernel_Performer_TMR.hpp"
 
 Kernel_Performer_tmr_t::Kernel_Performer_tmr_t(VOID_TIMER_t* VOID_TMR_ptr):Event_timer_t(VOID_TMR_ptr)

@@ -1,9 +1,14 @@
 /*
  * Time_Engine.cpp
  *
- *  Created on: 4 мая 2018 г.
+ *  Created on: 4 пїЅпїЅпїЅ 2018 пїЅ.
  *      Author: Stalker1290
  */
+
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include "Time_Engine.hpp"
 #include "CONTROLLER.hpp"
 
@@ -35,6 +40,9 @@ Time_Engine_t::Time_Engine_t(void):Callback_Interface_t()
 			this->Event_timer_data_instances[i][j].Desc_FREE = true;
 		}
 	}
+
+	memset(this->output_param_NRT, 0, sizeof(Time_engine_callback_param_t) * TE_num_of_NRT);
+	memset(this->Event_tmr_ptrs, 0, sizeof(Event_timer_t*) * TE_num_of_NRT);
 }
 
 void Time_Engine_t::Add_NRT_Timer(uint8_t timer_num, Event_timer_t* Event_tmr_ptr, uint32_t step_us)

@@ -1,15 +1,19 @@
 /*
  * Event_timer.cpp
  *
- *  Created on: 04 Aug 2017 ã.
+ *  Created on: 04 Aug 2017 ï¿½.
  *      Author: Stalker1290
  */
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "Event_timer.hpp"
 #include "string.h"
 
 Event_timer_t::Event_timer_t(VOID_TIMER_t* VOID_TMR_ptr):Callback_Interface_t()
 {
+	this->step_us = 0;
 	this->VOID_TMR_ptr = VOID_TMR_ptr;
 	for(int i=0; i<Event_TMR_size_of_events; i++)
 	{
