@@ -25,7 +25,7 @@
  */
 
 #ifndef JBOPT_H_
-#define  JBOPT_H_
+#define JBOPT_H_
 
 #include "jblibopts.h"
 
@@ -35,7 +35,13 @@
  * JB_LIB_PLATFORM == 1 ZYNQ
  */
 #if !defined JB_LIB_PLATFORM
-#define JB_LIB_PLATFORM			0
+#error "JB_Lib: Please define platform!"
+#endif
+
+#if JB_LIB_PLATFORM == 0
+#include "lpc43xx_jbdrivers_opts.h"
+#elif JB_LIB_PLATFORM == 1
+
 #endif
 
 /**
@@ -54,9 +60,18 @@
 #define USE_LWIP		0
 #endif
 
+/**
+ * USE_CONSOLE
+ */
+#if !defined USE_CONSOLE
+#define USE_CONSOLE			1
+#endif
+
+
+
 /*
    ------------------------------------
-   ----------- JB Kernel --------------
+   ----------- Event Timer ------------
    ------------------------------------
 */
 
@@ -67,6 +82,11 @@
 #define EVENT_TIMER_EVENTS_SIZE             16
 #endif
 
+/*
+   ------------------------------------
+   ----------- Time Engine ------------
+   ------------------------------------
+*/
 /**
  * TIME_ENGINE_USE_RT
  */
@@ -96,6 +116,95 @@
  */
 #if !defined TIME_ENGINE_RT_TIMER_NUM
 #define TIME_ENGINE_RT_TIMER_NUM		0xFF
+#endif
+
+/*
+   ------------------------------------
+   -------------- IPC -----------------
+   ------------------------------------
+*/
+
+/**
+ * IPC_QUEUE_SIZE
+ */
+#if !defined IPC_QUEUE_SIZE
+#define IPC_QUEUE_SIZE							16
+#endif
+
+/**
+ * IPC_NUM_LISTENERS
+ */
+#if !defined IPC_NUM_LISTENERS
+#define IPC_NUM_LISTENERS						16
+#endif
+
+/**
+ * IPC_NUM_GLOBAL_VALUES
+ */
+#if !defined IPC_NUM_GLOBAL_VALUES
+#define IPC_NUM_GLOBAL_VALUES					16
+#endif
+
+/**
+ * IPC_MSG_ID_MAX
+ */
+#if !defined IPC_MSG_ID_MAX
+#define IPC_MSG_ID_MAX							32
+#endif
+
+/**
+ * IPC_MSG_ID_FREE_MEMORY
+ */
+#if !defined IPC_MSG_ID_FREE_MEMORY
+#define IPC_MSG_ID_FREE_MEMORY					1
+#endif
+
+/**
+ * IPC_MSG_ID_GLOBAL_VALUE_UPDATE
+ */
+#if !defined IPC_MSG_ID_GLOBAL_VALUE_UPDATE
+#define IPC_MSG_ID_GLOBAL_VALUE_UPDATE			2
+#endif
+
+
+/*
+   ------------------------------------
+   ------ Interface Checker -----------
+   ------------------------------------
+*/
+
+/**
+ * INTERFACE_CHECKER_NUM_CHANNELS
+ */
+#if !defined INTERFACE_CHECKER_NUM_CHANNELS
+#define INTERFACE_CHECKER_NUM_CHANNELS		3
+#endif
+
+/*
+   ------------------------------------
+   --------- NVM Parameters -----------
+   ------------------------------------
+*/
+
+/**
+ *  NVM_PARAMETERS_MAGIC
+ */
+#if !defined NVM_PARAMETERS_MAGIC
+#define NVM_PARAMETERS_MAGIC							(0xAFDE)
+#endif
+
+/**
+ *  NVM_PARAMETERS_CELL_DESCRIPTION_SIZE
+ */
+#if !defined NVM_PARAMETERS_CELL_DESCRIPTION_SIZE
+#define NVM_PARAMETERS_CELL_DESCRIPTION_SIZE			32
+#endif
+
+/**
+ *  NVM_PARAMETERS_CELL_DATA_SIZE
+ */
+#if !defined NVM_PARAMETERS_CELL_DATA_SIZE
+#define NVM_PARAMETERS_CELL_DATA_SIZE					32
 #endif
 
 

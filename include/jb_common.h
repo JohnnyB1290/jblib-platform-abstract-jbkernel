@@ -30,9 +30,9 @@
 #include <stdint.h>
 #include "jbopt.h"
 
-#if JB_LIB_PLATFORM == 0
+#if JB_LIB_PLATFORM == 0  //LPC43XX
 #include "chip.h"
-#else
+#elif JB_LIB_PLATFORM == 1  //ZYNQ
 
 #endif
 

@@ -58,7 +58,7 @@ public:
 	virtual ~IVoidEthernet(void){}
 	virtual void initialize(void) = 0;
 	virtual void start(void) = 0;
-	virtual void resetDevice(void) = 0;
+	virtual void reset(void) = 0;
 	virtual void getParameter(const uint8_t number, void* const value) = 0;
 	virtual void setParameter(const uint8_t number, void* const value) = 0;
 	virtual bool isTxQueueFull(void) = 0;
