@@ -207,5 +207,180 @@
 #define NVM_PARAMETERS_CELL_DATA_SIZE					32
 #endif
 
+/*
+   ------------------------------------
+   -------------- FAT FS --------------
+   ------------------------------------
+*/
+
+/**
+ *  STORAGE_CONTROLLER_NUM_DEVICES
+ */
+#if !defined STORAGE_CONTROLLER_NUM_DEVICES
+#define STORAGE_CONTROLLER_NUM_DEVICES					1
+#endif
+
+/**
+ * FAT_FS_USE_CONSOLE
+ */
+#if !defined FAT_FS_USE_CONSOLE
+#define FAT_FS_USE_CONSOLE								1
+#endif
+
+/**
+ * LOGGER_NUM_LOGGERS
+ */
+#if !defined LOGGER_NUM_LOGGERS
+#define LOGGER_NUM_LOGGERS								1
+#endif
+
+/**
+ * LOGGER_MAX_PATH_LENGTH
+ */
+#if !defined LOGGER_MAX_PATH_LENGTH
+#define LOGGER_MAX_PATH_LENGTH							128
+#endif
+
+/**
+ * LOGGER_DEFAULT_DIR_NAME
+ */
+#if !defined LOGGER_DEFAULT_DIR_NAME
+#define LOGGER_DEFAULT_DIR_NAME							"log"
+#endif
+
+/*
+   ------------------------------------
+   ------ TCP Server Channel ----------
+   ------------------------------------
+*/
+
+/**
+ * TCP_SERVER_USE_CONSOLE
+ */
+#if !defined TCP_SERVER_USE_CONSOLE
+#define TCP_SERVER_USE_CONSOLE								1
+#endif
+
+/**
+ * TCP_SERVER_NUM_BROADCAST_CONNECTIONS
+ */
+#if !defined TCP_SERVER_NUM_BROADCAST_CONNECTIONS
+#define TCP_SERVER_NUM_BROADCAST_CONNECTIONS				4
+#endif
+
+/*
+   ------------------------------------
+   --------- ARP Controller -----------
+   ------------------------------------
+*/
+
+/**
+ * ARP_CONTROLLER_USE_CONSOLE
+ */
+#if !defined ARP_CONTROLLER_USE_CONSOLE
+#define ARP_CONTROLLER_USE_CONSOLE					1
+#endif
+
+/**
+ * ARP_CONTROLLER_MAX_NUM_IP_FOR_REPLY
+ */
+#if !defined ARP_CONTROLLER_MAX_NUM_IP_FOR_REPLY
+#define ARP_CONTROLLER_MAX_NUM_IP_FOR_REPLY			4
+#endif
+
+/**
+ * ARP_CONTROLLER_ARP_TABLE_SIZE
+ */
+#if !defined ARP_CONTROLLER_ARP_TABLE_SIZE
+#define ARP_CONTROLLER_ARP_TABLE_SIZE				32
+#endif
+
+/**
+ * ARP_CONTROLLER_REFRESH_RECORD_TIME
+ */
+#if !defined ARP_CONTROLLER_REFRESH_RECORD_TIME
+#define ARP_CONTROLLER_REFRESH_RECORD_TIME			120
+#endif
+
+/**
+ * ARP_CONTROLLER_DELETE_RECORD_TIME
+ */
+#if !defined ARP_CONTROLLER_DELETE_RECORD_TIME
+#define ARP_CONTROLLER_DELETE_RECORD_TIME			600
+#endif
+
+/*
+   ------------------------------------
+   --------- Ethernet Router ----------
+   ------------------------------------
+*/
+
+/**
+ * ETHERNET_ROUTER_USE_CONSOLE
+ */
+#if !defined ETHERNET_ROUTER_USE_CONSOLE
+#define ETHERNET_ROUTER_USE_CONSOLE					1
+#endif
+
+/**
+ * ETHERNET_ROUTER_MAX_NUM_INTERFACES
+ */
+#if !defined ETHERNET_ROUTER_MAX_NUM_INTERFACES
+#define ETHERNET_ROUTER_MAX_NUM_INTERFACES				2
+#endif
+
+/**
+ * ETHERNET_ROUTER_MAX_NUM_LISTENERS
+ */
+#if !defined ETHERNET_ROUTER_MAX_NUM_LISTENERS
+#define ETHERNET_ROUTER_MAX_NUM_LISTENERS				4
+#endif
+
+/**
+ * ETHERNET_ROUTER_DEFAULT_PARSE_PERIOD_US
+ */
+#if !defined ETHERNET_ROUTER_DEFAULT_PARSE_PERIOD_US
+#define ETHERNET_ROUTER_DEFAULT_PARSE_PERIOD_US			100
+#endif
+
+/*
+   ------------------------------------
+   ----------- DHCP Server ------------
+   ------------------------------------
+*/
+
+/**
+ * DHCP_SERVER_DOMAIN_NAME
+ */
+#if !defined DHCP_SERVER_DOMAIN_NAME
+#define DHCP_SERVER_DOMAIN_NAME					((char*)"JBDHCP")
+#endif
+
+/*
+   ------------------------------------
+   ------------ DNS Server ------------
+   ------------------------------------
+*/
+
+/**
+ * DNS_SERVER_HOST_NAME_MAX_SIZE
+ */
+#if !defined DNS_SERVER_HOST_NAME_MAX_SIZE
+#define DNS_SERVER_HOST_NAME_MAX_SIZE			128
+#endif
+
+/**
+ * DNS_SERVER_HOST_NAME_0
+ */
+#if !defined DNS_SERVER_HOST_NAME_0
+#define DNS_SERVER_HOST_NAME_0					((char*)"device.johnnyb")
+#endif
+
+/**
+ * DNS_SERVER_HOST_NAME_1
+ */
+#if !defined DNS_SERVER_HOST_NAME_1
+#define DNS_SERVER_HOST_NAME_1					((char*)"www.device.johnnyb")
+#endif
 
 #endif /*  JBOPT_H_ */

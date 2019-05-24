@@ -28,6 +28,7 @@
 #define  JB_COMMON_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "jbopt.h"
 
 #if JB_LIB_PLATFORM == 0  //LPC43XX
@@ -56,6 +57,7 @@
 
 #define D_A_MIN_B_MOD_C(a,b,c) (((a) >= (b))? \
 							   (((a) - (b))):(((a) + (c)) - (b)))
+
 
 #if USE_THREAD_SAFE_MALLOC == 1
 #include "stdlib.h"

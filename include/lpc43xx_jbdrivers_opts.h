@@ -27,11 +27,11 @@
 #define LPC43XX_JBDRIVERS_OPTS_H_
 
 typedef struct{
-	unsigned char port = 0;
-	unsigned char pin = 0;
-	unsigned char gpioPort = 0;
-	unsigned char gpioPin = 0;
-	unsigned char scuMode = 0;
+	unsigned char port;
+	unsigned char pin;
+	unsigned char gpioPort;
+	unsigned char gpioPin;
+	unsigned char scuMode;
 }BoardGpio_t;
 
 /*
