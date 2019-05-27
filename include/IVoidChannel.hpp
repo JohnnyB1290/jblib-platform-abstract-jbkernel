@@ -26,6 +26,7 @@
 #ifndef IVOIDCHANNEL_HPP_
 #define IVOIDCHANNEL_HPP_
 
+#include <stddef.h>
 #include "callback_interfaces.hpp"
 
 namespace jblib::jbkernel
