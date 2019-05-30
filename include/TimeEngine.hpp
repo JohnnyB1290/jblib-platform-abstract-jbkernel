@@ -35,8 +35,11 @@
 #include "IRtTimer.hpp"
 #endif
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 typedef struct
 {
@@ -85,6 +88,7 @@ private:
 	EventTimerData_t eventTimersData_[TIME_ENGINE_NUM_NRT_TIMERS][ EVENT_TIMER_EVENTS_SIZE ];
 };
 
+}
 }
 
 #endif /* TIMEENGINE_HPP_ */

@@ -31,7 +31,9 @@
 #include "IVoidChannel.hpp"
 #include "RingBuffer.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 using namespace jbutilities;
@@ -71,6 +73,7 @@ private:
 	uint16_t commandIndex_ = 0;
 };
 
+}
 }
 
 #endif /* CONSOLE_HPP_ */

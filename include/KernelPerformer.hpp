@@ -29,8 +29,11 @@
 
 #include "EventTimer.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 class KernelPerformer : public EventTimer
 {
@@ -48,6 +51,7 @@ private:
 	bool isEventsReady_[ EVENT_TIMER_EVENTS_SIZE ];
 };
 
+}
 }
 
 #endif /* KERNELPERFORMER_HPP_ */

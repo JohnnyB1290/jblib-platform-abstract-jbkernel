@@ -28,7 +28,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "jb_common.h"
-
 #if USE_CONSOLE
 #include <string.h>
 #include <stdio.h>

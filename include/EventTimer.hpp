@@ -30,7 +30,9 @@
 #include "jb_common.h"
 #include "IVoidTimer.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 class EventTimer : public IVoidCallback
@@ -60,6 +62,7 @@ protected:
 	bool isOneTimeEvents_[ EVENT_TIMER_EVENTS_SIZE ];
 };
 
+}
 }
 
 #endif /* EVENTTIMER_HPP_ */
