@@ -31,7 +31,9 @@
 #include "lwip/pbuf.h"
 #endif
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 typedef enum
@@ -94,6 +96,7 @@ public:
 			uint16_t frameSize, IVoidEthernet* const source, void* parameter) = 0;
 };
 
+}
 }
 
 #endif /* IVOIDETHERNET_HPP_ */

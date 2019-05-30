@@ -28,8 +28,11 @@
 
 #include "callback_interfaces.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 class IRtTimer
 {
@@ -50,6 +53,7 @@ public:
 	virtual void setCounter(uint32_t count) = 0;
 };
 
+}
 }
 
 #endif /*  IRTTIMER_HPP_ */

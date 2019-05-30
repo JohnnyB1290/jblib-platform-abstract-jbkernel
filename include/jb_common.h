@@ -34,8 +34,30 @@
 #if JB_LIB_PLATFORM == 0  //LPC43XX
 #include "chip.h"
 #elif JB_LIB_PLATFORM == 1  //ZYNQ
+#include "xil_cache.h"
+#include "xemacps.h"
+#include "xil_exception.h"
 
+// S=b1(Sharable) TEX=b001 AP=b11(Access permission Full Access),
+// Domain=b1111, C=b0, B=b0
+#define setNonCached1Mb(address) 				Xil_SetTlbAttributes((address), NORM_NONCACHE)
+
+#define setNonCachedBlock(address, sizeInMb) 	{ for(uint32_t i = 0; i < (sizeInMb); i++) \
+												Xil_SetTlbAttributes((address) + i * 0x00100000, NORM_NONCACHE); }
+
+#define sev() 									__asm__("sev")
+
+#define EMAC_ETH_MAX_FLEN 						XEMACPS_MAX_VLAN_FRAME_SIZE
+
+typedef uint8_t EthernetFrame[XEMACPS_MAX_VLAN_FRAME_SIZE] __attribute__ ((aligned(64)));
+
+#define __disable_irq() 	Xil_ExceptionDisable()
+#define __enable_irq()		Xil_ExceptionEnable()
 #endif
+
+#define CRITICAL_SECTION(code) { __disable_irq(); \
+								code \
+								__enable_irq(); }
 
 #define LONG_TO_BIN(n) ((((n) >> 21 ) & 0x80) | \
 					 (((n) >> 18 ) & 0x40)  | \

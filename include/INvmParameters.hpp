@@ -34,8 +34,11 @@
 #define NVM_PARAMETERS_CELL_TYPE_HEX_bm 			(1 << 6) //1 - show data as hex, 0 - show data in dec
 #define NVM_PARAMETERS_CELL_TYPE_NOT_DISPLAY_bm 	(1 << 5) //0 - display in WebIface, 1 - not display
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 #pragma pack(push, 1)
 
@@ -103,6 +106,7 @@ public:
 	virtual NvmParametersCell_t* getLastSetCellPtr(void) = 0;
 };
 
+}
 }
 
 #endif /* INVMPARAMETERS_HPP_ */

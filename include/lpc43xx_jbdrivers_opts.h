@@ -69,49 +69,6 @@ typedef struct{
 #define JBCONTROLLER_NUM_NOP_DELAY_MS 			40824  //For 204 MHz clock
 #endif
 
-
-
-/*
-   ------------------------------------
-   ------------- Console --------------
-   ------------------------------------
-*/
-
-/**
- * CONSOLE_TX_BUF_SIZE
- */
-#if !defined CONSOLE_TX_BUF_SIZE
-#define CONSOLE_TX_BUF_SIZE					128
-#endif
-
-/**
- * CONSOLE_TX_MES_MAX_SIZE
- */
-#if !defined CONSOLE_TX_MESAGE_MAX_SIZE
-#define CONSOLE_TX_MESAGE_MAX_SIZE			64
-#endif
-
-/**
- * CONSOLE_RX_BUF_SIZE >= CONSOLE_COMMAND_BUF_SIZE
- */
-#if !defined CONSOLE_RX_BUF_SIZE
-#define CONSOLE_RX_BUF_SIZE					64
-#endif
-
-/**
- * CONSOLE_COMMAND_BUF_SIZE
- */
-#if !defined CONSOLE_COMMAND_BUF_SIZE
-#define CONSOLE_COMMAND_BUF_SIZE			64
-#endif
-
-/**
- * CONSOLE_NUM_LISTENERS
- */
-#if !defined CONSOLE_NUM_LISTENERS
-#define CONSOLE_NUM_LISTENERS				2
-#endif
-
 /*
    ------------------------------------
    ----------- IRQ Controller ---------

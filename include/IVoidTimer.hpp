@@ -30,7 +30,9 @@
 #include <stdint.h>
 #include "callback_interfaces.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 class IVoidTimer
@@ -42,8 +44,8 @@ public:
 	virtual void start(void) = 0;
 	virtual void stop(void) = 0;
 	virtual void reset(void) = 0;
-	virtual uint32_t getCounter(void) const = 0;
-	virtual uint32_t getUsecCounter(void) const
+	virtual uint32_t getCounter(void) = 0;
+	virtual uint32_t getUsecCounter(void)
 	{
 		return 0;
 	}
@@ -53,6 +55,7 @@ public:
 	virtual void deinitialize(void) = 0;
 };
 
+}
 }
 
 #endif /* IVOIDTIMER_HPP_ */

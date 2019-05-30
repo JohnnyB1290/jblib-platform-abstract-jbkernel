@@ -31,7 +31,9 @@
 
 #include <stdint.h>
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 class IVoidCallback
@@ -88,6 +90,7 @@ public:
 };
 
 
-} //namespace
+}
+}
 
 #endif /* CALLBACK_INTERFACES_HPP_ */

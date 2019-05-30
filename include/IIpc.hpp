@@ -43,8 +43,11 @@
 #define IPC_QUEUE_IS_EMPTY(q)   ((q)->head == (q)->tail)
 #define IPC_QUEUE_IS_VALID(q)   ((q)->valid == IPC_QUEUE_MAGIC_VALID)
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 typedef struct
 {
@@ -100,6 +103,7 @@ public:
     virtual uint32_t getGlobalValue(uint32_t index) = 0;
 };
 
+}
 }
 
 #endif /* IIPC_HPP_ */

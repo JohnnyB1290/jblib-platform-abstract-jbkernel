@@ -29,8 +29,11 @@
 #include <stddef.h>
 #include "callback_interfaces.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
 
 class IVoidChannel
 {
@@ -45,6 +48,7 @@ public:
 	virtual void setParameter(const uint8_t number, void* const value) = 0;
 };
 
+}
 }
 
 #endif /* IVOIDCHANNEL_HPP_ */

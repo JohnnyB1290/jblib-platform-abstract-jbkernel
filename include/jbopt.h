@@ -41,7 +41,7 @@
 #if JB_LIB_PLATFORM == 0
 #include "lpc43xx_jbdrivers_opts.h"
 #elif JB_LIB_PLATFORM == 1
-
+#include "zynq_jbdrivers_opts.h"
 #endif
 
 /**
@@ -60,6 +60,12 @@
 #define USE_LWIP		0
 #endif
 
+/*
+   ------------------------------------
+   ------------- Console --------------
+   ------------------------------------
+*/
+
 /**
  * USE_CONSOLE
  */
@@ -67,7 +73,40 @@
 #define USE_CONSOLE			1
 #endif
 
+/**
+ * CONSOLE_TX_BUF_SIZE
+ */
+#if !defined CONSOLE_TX_BUF_SIZE
+#define CONSOLE_TX_BUF_SIZE					128
+#endif
 
+/**
+ * CONSOLE_TX_MES_MAX_SIZE
+ */
+#if !defined CONSOLE_TX_MESAGE_MAX_SIZE
+#define CONSOLE_TX_MESAGE_MAX_SIZE			64
+#endif
+
+/**
+ * CONSOLE_RX_BUF_SIZE >= CONSOLE_COMMAND_BUF_SIZE
+ */
+#if !defined CONSOLE_RX_BUF_SIZE
+#define CONSOLE_RX_BUF_SIZE					64
+#endif
+
+/**
+ * CONSOLE_COMMAND_BUF_SIZE
+ */
+#if !defined CONSOLE_COMMAND_BUF_SIZE
+#define CONSOLE_COMMAND_BUF_SIZE			64
+#endif
+
+/**
+ * CONSOLE_NUM_LISTENERS
+ */
+#if !defined CONSOLE_NUM_LISTENERS
+#define CONSOLE_NUM_LISTENERS				2
+#endif
 
 /*
    ------------------------------------
