@@ -48,7 +48,7 @@ public:
 
 
 
-class Console : public IChannelCallback, IVoidCallback
+class Console : public IChannelCallback, public IVoidCallback
 {
 public:
 	static Console* getConsole(void);

@@ -53,7 +53,7 @@
  * JBDRIVERS_USE_WATCHDOG
  */
 #if !defined JBDRIVERS_USE_WATCHDOG
-#define JBDRIVERS_USE_WATCHDOG					1
+#define JBDRIVERS_USE_WATCHDOG					0
 #endif
 
 /**
@@ -88,7 +88,7 @@
  * JBDRIVERS_USE_CAN
  */
 #if !defined JBDRIVERS_USE_CAN
-#define JBDRIVERS_USE_CAN						1
+#define JBDRIVERS_USE_CAN						0
 #endif
 
 /*
@@ -157,7 +157,7 @@
  * ETHERNET_PHY_USE_CONSOLE
  */
 #if !defined ETHERNET_PHY_USE_CONSOLE
-#define ETHERNET_PHY_USE_CONSOLE		1
+#define ETHERNET_PHY_USE_CONSOLE			0
 #endif
 
 /**
@@ -581,7 +581,7 @@
  * QSPI_FLASH_USE_CONSOLE
  */
 #if !QSPI_FLASH_USE_CONSOLE
-#define QSPI_FLASH_USE_CONSOLE					1
+#define QSPI_FLASH_USE_CONSOLE					0
 #endif
 
 /**
@@ -651,7 +651,7 @@
  * CAN_USE_CONSOLE
  */
 #if !CAN_USE_CONSOLE
-#define CAN_USE_CONSOLE				1
+#define CAN_USE_CONSOLE				0
 #endif
 
 /**

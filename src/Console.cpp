@@ -169,10 +169,10 @@ void Console::channelCallback(uint8_t* const buffer, const uint16_t size,
 
 void Console::voidCallback(void* const source, void* parameter)
 {
-	uint8_t tempBuffer[CONSOLE_TX_MESAGE_MAX_SIZE];
+	uint8_t tempBuffer[CONSOLE_TX_MESSAGE_MAX_SIZE];
 	uint16_t tempSize = 0;
 	if(this->outputChannel_) {
-		tempSize = this->txRingBuffer_->popMult(tempBuffer, CONSOLE_TX_MESAGE_MAX_SIZE);
+		tempSize = this->txRingBuffer_->popMult(tempBuffer, CONSOLE_TX_MESSAGE_MAX_SIZE);
 		if(tempSize)
 			this->outputChannel_->tx(tempBuffer, tempSize, NULL);
 	}

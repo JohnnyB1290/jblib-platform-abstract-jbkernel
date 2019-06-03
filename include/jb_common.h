@@ -29,6 +29,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "jbopt.h"
 
 #if JB_LIB_PLATFORM == 0  //LPC43XX
@@ -82,7 +83,6 @@ typedef uint8_t EthernetFrame[XEMACPS_MAX_VLAN_FRAME_SIZE] __attribute__ ((align
 
 
 #if USE_THREAD_SAFE_MALLOC == 1
-#include "stdlib.h"
 
 __inline void* malloc_s(size_t size)
 {

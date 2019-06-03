@@ -50,7 +50,7 @@
  * USE_THREAD_SAFE_MALLOC == 1 use disable/enable irq if malloc used
  */
 #if !defined USE_THREAD_SAFE_MALLOC
-#define USE_THREAD_SAFE_MALLOC			1
+#define USE_THREAD_SAFE_MALLOC			0
 #endif
 
 /**
@@ -70,7 +70,7 @@
  * USE_CONSOLE
  */
 #if !defined USE_CONSOLE
-#define USE_CONSOLE			1
+#define USE_CONSOLE			0
 #endif
 
 /**
@@ -83,8 +83,8 @@
 /**
  * CONSOLE_TX_MES_MAX_SIZE
  */
-#if !defined CONSOLE_TX_MESAGE_MAX_SIZE
-#define CONSOLE_TX_MESAGE_MAX_SIZE			64
+#if !defined CONSOLE_TX_MESSAGE_MAX_SIZE
+#define CONSOLE_TX_MESSAGE_MAX_SIZE			64
 #endif
 
 /**
@@ -130,14 +130,14 @@
  * TIME_ENGINE_USE_RT
  */
 #if !defined TIME_ENGINE_USE_RT
-#define TIME_ENGINE_USE_RT             0
+#define TIME_ENGINE_USE_RT             	0
 #endif
 
 /**
  * TIME_ENGINE_NUM_MATCHES
  */
 #if !defined TIME_ENGINE_NUM_MATCHES
-#define TIME_ENGINE_NUM_MATCHES		4
+#define TIME_ENGINE_NUM_MATCHES			4
 #endif
 
 /**
@@ -216,7 +216,7 @@
  * INTERFACE_CHECKER_NUM_CHANNELS
  */
 #if !defined INTERFACE_CHECKER_NUM_CHANNELS
-#define INTERFACE_CHECKER_NUM_CHANNELS		3
+#define INTERFACE_CHECKER_NUM_CHANNELS			3
 #endif
 
 /*
@@ -263,7 +263,7 @@
  * FAT_FS_USE_CONSOLE
  */
 #if !defined FAT_FS_USE_CONSOLE
-#define FAT_FS_USE_CONSOLE								1
+#define FAT_FS_USE_CONSOLE								0
 #endif
 
 /**
@@ -297,7 +297,7 @@
  * TCP_SERVER_USE_CONSOLE
  */
 #if !defined TCP_SERVER_USE_CONSOLE
-#define TCP_SERVER_USE_CONSOLE								1
+#define TCP_SERVER_USE_CONSOLE								0
 #endif
 
 /**
@@ -317,7 +317,7 @@
  * ARP_CONTROLLER_USE_CONSOLE
  */
 #if !defined ARP_CONTROLLER_USE_CONSOLE
-#define ARP_CONTROLLER_USE_CONSOLE					1
+#define ARP_CONTROLLER_USE_CONSOLE					0
 #endif
 
 /**
@@ -358,7 +358,7 @@
  * ETHERNET_ROUTER_USE_CONSOLE
  */
 #if !defined ETHERNET_ROUTER_USE_CONSOLE
-#define ETHERNET_ROUTER_USE_CONSOLE					1
+#define ETHERNET_ROUTER_USE_CONSOLE						0
 #endif
 
 /**
