@@ -643,63 +643,63 @@
 /**
  * CAN_USE_UAVCAN
  */
-#if !CAN_USE_UAVCAN
+#if !defined CAN_USE_UAVCAN
 #define CAN_USE_UAVCAN				0
 #endif
 
 /**
  * CAN_USE_CONSOLE
  */
-#if !CAN_USE_CONSOLE
+#if !defined CAN_USE_CONSOLE
 #define CAN_USE_CONSOLE				0
 #endif
 
 /**
  * CAN_TX_QUEUE_SIZE //must be a power of 2
  */
-#if !CAN_TX_QUEUE_SIZE
+#if !defined CAN_TX_QUEUE_SIZE
 #define CAN_TX_QUEUE_SIZE			64
 #endif
 
 /**
  * CAN_RX_QUEUE_SIZE //must be a power of 2
  */
-#if !CAN_RX_QUEUE_SIZE
+#if !defined CAN_RX_QUEUE_SIZE
 #define CAN_RX_QUEUE_SIZE			64
 #endif
 
 /**
  * CAN_NUM_INSTANCES
  */
-#if !CAN_NUM_INSTANCES
+#if !defined CAN_NUM_INSTANCES
 #define CAN_NUM_INSTANCES			XPAR_XCANPS_NUM_INSTANCES
 #endif
 
 /**
  * CAN_DEVICE_IDS
  */
-#if !CAN_DEVICE_IDS
+#if !defined CAN_DEVICE_IDS
 #define CAN_DEVICE_IDS				{XPAR_PS7_CAN_0_DEVICE_ID, XPAR_PS7_CAN_1_DEVICE_ID}
 #endif
 
 /**
  * CAN_INTERRUPT_IDS
  */
-#if !CAN_INTERRUPT_IDS
+#if !defined CAN_INTERRUPT_IDS
 #define CAN_INTERRUPT_IDS			{XPS_CAN0_INT_ID, XPS_CAN1_INT_ID}
 #endif
 
 /**
  * CAN_CLOCKS
  */
-#if !CAN_CLOCKS
+#if !defined CAN_CLOCKS
 #define CAN_CLOCKS					{XPAR_PS7_CAN_0_CAN_CLK_FREQ_HZ, XPAR_PS7_CAN_1_CAN_CLK_FREQ_HZ}
 #endif
 
 /**
  * CAN_INTERRUPT_PRIORITIES
  */
-#if !CAN_INTERRUPT_PRIORITIES
+#if !defined CAN_INTERRUPT_PRIORITIES
 #define CAN_INTERRUPT_PRIORITIES	{80, 80}
 #endif
 
