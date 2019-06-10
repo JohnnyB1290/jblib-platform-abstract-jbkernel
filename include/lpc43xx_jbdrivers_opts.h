@@ -246,7 +246,7 @@ typedef struct{
  * ETHERNET_PHY_USE_MII
  */
 #if !defined ETHERNET_PHY_USE_MII
-#define ETHERNET_PHY_USE_MII			1
+#define ETHERNET_PHY_USE_MII					1
 #endif
 
 #if ETHERNET_PHY_USE_MII
@@ -439,7 +439,7 @@ typedef struct{
  * ETHERNET_PHY_USE_CONSOLE
  */
 #if !defined ETHERNET_PHY_USE_CONSOLE
-#define ETHERNET_PHY_USE_CONSOLE		1
+#define ETHERNET_PHY_USE_CONSOLE		0
 #endif
 
 /*
@@ -1039,7 +1039,7 @@ typedef struct{
  * SPIFI_USE_CONSOLE
  */
 #if !defined SPIFI_USE_CONSOLE
-#define SPIFI_USE_CONSOLE		1
+#define SPIFI_USE_CONSOLE		0
 #endif
 
 /**
@@ -1129,7 +1129,7 @@ typedef struct{
  * FRAM_CY15B104Q_USE_CONSOLE
  */
 #if !defined FRAM_CY15B104Q_USE_CONSOLE
-#define FRAM_CY15B104Q_USE_CONSOLE		1
+#define FRAM_CY15B104Q_USE_CONSOLE		0
 #endif
 
 /*
@@ -1370,7 +1370,7 @@ typedef struct{
  * USB_DEVICE_ROM_USE_CONSOLE
  */
 #if !defined USB_DEVICE_ROM_USE_CONSOLE
-#define USB_DEVICE_ROM_USE_CONSOLE						1
+#define USB_DEVICE_ROM_USE_CONSOLE						0
 #endif
 
 /* On LPC18xx/43xx the USB controller requires endpoint queue heads to start on
@@ -1653,6 +1653,13 @@ typedef struct{
    ----------- MSC DEVICE ROM ---------
    ------------------------------------
 */
+
+/**
+ * USE_MSC_DEVICE_ROM
+ */
+#if !defined USE_MSC_DEVICE_ROM
+#define USE_MSC_DEVICE_ROM						0
+#endif
 
 /**
  * MSC_DEVICE_ROM_IF_NUM_USB_0
