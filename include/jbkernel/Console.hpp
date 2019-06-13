@@ -27,9 +27,9 @@
 #define CONSOLE_HPP_
 
 #include <stdint.h>
-#include "callback_interfaces.hpp"
-#include "IVoidChannel.hpp"
-#include "RingBuffer.hpp"
+#include "jbkernel/callback_interfaces.hpp"
+#include "jbkernel/IVoidChannel.hpp"
+#include "jbutilities/RingBuffer.hpp"
 
 namespace jblib
 {

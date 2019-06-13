@@ -26,7 +26,7 @@
 #ifndef IRTTIMER_HPP_
 #define  IRTTIMER_HPP_
 
-#include "callback_interfaces.hpp"
+#include "jbkernel/callback_interfaces.hpp"
 
 namespace jblib
 {

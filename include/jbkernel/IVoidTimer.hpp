@@ -28,7 +28,7 @@
 #define IVOIDTIMER_HPP_
 
 #include <stdint.h>
-#include "callback_interfaces.hpp"
+#include "jbkernel/callback_interfaces.hpp"
 
 namespace jblib
 {

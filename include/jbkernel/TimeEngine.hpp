@@ -28,11 +28,11 @@
 #define TIMEENGINE_HPP_
 
 #include <stdlib.h>
-#include "EventTimer.hpp"
-#include "KernelPerformer.hpp"
+#include "jbkernel/EventTimer.hpp"
+#include "jbkernel/KernelPerformer.hpp"
 
 #if TIME_ENGINE_USE_RT
-#include "IRtTimer.hpp"
+#include "jbkernel/IRtTimer.hpp"
 #endif
 
 namespace jblib

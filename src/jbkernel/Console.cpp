@@ -31,8 +31,8 @@
 #if USE_CONSOLE
 #include <string.h>
 #include <stdio.h>
-#include "Console.hpp"
-#include "JbController.hpp"
+#include "jbkernel/Console.hpp"
+#include "jbdrivers/JbController.hpp"
 
 namespace jblib::jbkernel
 {

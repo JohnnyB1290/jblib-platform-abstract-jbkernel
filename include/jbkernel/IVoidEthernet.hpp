@@ -26,7 +26,7 @@
 #ifndef IVOIDETHERNET_HPP_
 #define IVOIDETHERNET_HPP_
 
-#include "jb_common.h"
+#include "jbkernel/jb_common.h"
 #if USE_LWIP
 #include "lwip/pbuf.h"
 #endif

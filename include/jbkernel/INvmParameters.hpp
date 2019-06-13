@@ -28,7 +28,7 @@
 
 #include <stdint.h>
 #include "jbopt.h"
-#include "callback_interfaces.hpp"
+#include "jbkernel/callback_interfaces.hpp"
 
 #define NVM_PARAMETERS_CELL_TYPE_ARRAY_bm 			(1 << 7) //1 - data is array
 #define NVM_PARAMETERS_CELL_TYPE_HEX_bm 			(1 << 6) //1 - show data as hex, 0 - show data in dec

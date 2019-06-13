@@ -39,9 +39,9 @@
 #endif
 
 #if JB_LIB_PLATFORM == 0
-#include "lpc43xx_jbdrivers_opts.h"
+#include "jbkernel/lpc43xx_jbdrivers_opts.h"
 #elif JB_LIB_PLATFORM == 1
-#include "zynq_jbdrivers_opts.h"
+#include "jbkernel/zynq_jbdrivers_opts.h"
 #endif
 
 /**

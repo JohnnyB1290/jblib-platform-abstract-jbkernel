@@ -27,7 +27,7 @@
 #ifndef KERNELPERFORMER_HPP_
 #define KERNELPERFORMER_HPP_
 
-#include "EventTimer.hpp"
+#include "jbkernel/EventTimer.hpp"
 
 namespace jblib
 {

@@ -27,7 +27,7 @@
 #define IIPC_HPP_
 
 #include <stdint.h>
-#include "jbopt.h"
+#include "jbkernel/jbopt.h"
 
 #if ((IPC_QUEUE_SIZE & (IPC_QUEUE_SIZE - 1))|| IPC_QUEUE_SIZE == 0)
 #error "IPC Queue Size must always be power of 2"

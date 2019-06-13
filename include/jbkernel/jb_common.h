@@ -30,7 +30,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "jbopt.h"
+#include "jbkernel/jbopt.h"
 
 #if JB_LIB_PLATFORM == 0  //LPC43XX
 #include "chip.h"

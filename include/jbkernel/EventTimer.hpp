@@ -27,8 +27,8 @@
 #ifndef EVENTTIMER_HPP_
 #define EVENTTIMER_HPP_
 
-#include "jb_common.h"
-#include "IVoidTimer.hpp"
+#include "jbkernel/jb_common.h"
+#include "jbkernel/IVoidTimer.hpp"
 
 namespace jblib
 {
