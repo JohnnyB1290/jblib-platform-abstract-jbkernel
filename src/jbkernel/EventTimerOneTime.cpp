@@ -30,7 +30,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "jbkernel/jb_common.h"
-#if !EVENT_TIMER_USE_CYCLIC_EVENTS
+#if !EVENT_TIMER_LONG_DELAY_EVENTS_ENABLE
 #include <string.h>
 #include "jbkernel/EventTimer.hpp"
 
@@ -203,6 +203,7 @@ void EventTimer::deleteEvent(IVoidCallback* const callback)
 				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 				this->br_ = tbr;
 			}
+			__enable_irq();
 			break;
 		}
 		__enable_irq();
@@ -230,6 +231,7 @@ void EventTimer::deleteEvent(IVoidCallback* const callback, void* const data)
 				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 				this->br_ = tbr;
 			}
+			__enable_irq();
 			break;
 		}
 		__enable_irq();

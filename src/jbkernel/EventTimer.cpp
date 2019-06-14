@@ -29,7 +29,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "jbkernel/jb_common.h"
-#if EVENT_TIMER_USE_CYCLIC_EVENTS
+#if EVENT_TIMER_LONG_DELAY_EVENTS_ENABLE
 #include <string.h>
 #include "jbkernel/EventTimer.hpp"
 
