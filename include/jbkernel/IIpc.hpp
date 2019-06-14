@@ -90,11 +90,11 @@ private:
     uint64_t code_ = 0;
 };
 
-class IIPC
+class IIpc
 {
 public:
-	IIPC(void) { }
-	virtual ~IIPC(void) { }
+	IIpc(void) { }
+	virtual ~IIpc(void) { }
 	virtual void addIpcListener(IIpcListener* listener) = 0;
     virtual void deleteIpcListener(IIpcListener* listener) = 0;
     virtual int pushMsg(uint32_t id, uint32_t data) = 0;
