@@ -70,7 +70,7 @@
  * USE_CONSOLE
  */
 #if !defined USE_CONSOLE
-#define USE_CONSOLE			1
+#define USE_CONSOLE							0
 #endif
 
 /**
