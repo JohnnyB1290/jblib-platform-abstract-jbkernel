@@ -121,6 +121,13 @@
 #define EVENT_TIMER_EVENTS_SIZE             16
 #endif
 
+/**
+ * EVENT_TIMER_USE_CYCLIC_EVENTS
+ */
+#if !defined EVENT_TIMER_USE_CYCLIC_EVENTS
+#define EVENT_TIMER_USE_CYCLIC_EVENTS       0
+#endif
+
 /*
    ------------------------------------
    ----------- Time Engine ------------

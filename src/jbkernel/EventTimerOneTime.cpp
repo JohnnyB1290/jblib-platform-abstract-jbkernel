@@ -1,11 +1,12 @@
 /**
  * @file
- * @brief Event Timer Realization
+ * @brief Event Timer Only One Time EventsRealization
  *
  * Event Timer for cycling/one time events.
  *
  * @note
  * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
+ * Copyright © 2019 Gleb Koba. Contacts: <koban4ik_11@mail.ru>
  * All rights reserved.
  * @note
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,12 +30,14 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "jbkernel/jb_common.h"
-#if EVENT_TIMER_USE_CYCLIC_EVENTS
+#if !EVENT_TIMER_USE_CYCLIC_EVENTS
 #include <string.h>
 #include "jbkernel/EventTimer.hpp"
 
+
 namespace jblib::jbkernel
 {
+
 
 EventTimer::EventTimer(IVoidTimer* const voidTimer) : IVoidCallback()
 {
@@ -52,40 +55,46 @@ EventTimer::EventTimer(IVoidTimer* const voidTimer) : IVoidCallback()
 
 void EventTimer::voidCallback(void* const source, void* parameter)
 {
-	IVoidCallback* tempCallbacks[EVENT_TIMER_EVENTS_SIZE];
-	void* tempEventsData[EVENT_TIMER_EVENTS_SIZE];
-
 	__disable_irq();
 	this->stop();
 	this->isQueueProcessing_ = true;
+	uint16_t tbw = this->bw_;
+	uint16_t tbr = this->br_;
 	__enable_irq();
-	memcpy(tempCallbacks, this->callbacks_,
-			EVENT_TIMER_EVENTS_SIZE * sizeof( IVoidCallback* ));
-	memcpy(tempEventsData, this->eventsData_,
-			EVENT_TIMER_EVENTS_SIZE * sizeof( void* ));
-	
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
-		if(tempCallbacks[i]) {
-			this->eventsCounter_[i]++;
-			if(this->eventsCounter_[i] >= this->eventsPeriod_[i]) {
-				if(this->isOneTimeEvents_[i]){
-					this->eventsPeriod_[i] = 0;
-					this->eventsData_[i] = NULL;
-					this->isOneTimeEvents_[i] = false;
-					this->callbacks_[i] = (IVoidCallback*)NULL;
+
+	while(tbr != tbw) {
+		if(this->callbacks_[tbr]) {
+			this->eventsCounter_[tbr]++;
+			if(this->eventsCounter_[tbr] >= this->eventsPeriod_[tbr]) {
+				this->eventsCounter_[tbr] = 0;
+				this->callbacks_[tbr]->voidCallback((void*)this,
+						this->eventsData_[tbr]);
+				this->eventsPeriod_[tbr] = 0;
+				this->eventsData_[tbr] = NULL;
+				this->isOneTimeEvents_[tbr] = false;
+				this->callbacks_[tbr] = (IVoidCallback*)NULL;
+				if(tbr == this->br_) {
+					__disable_irq();
+					this->br_++;
+					this->br_ = this->br_ == EVENT_TIMER_EVENTS_SIZE ?
+									0 : this->br_;
+					__enable_irq();
 				}
-				this->eventsCounter_[i] = 0;
-				tempCallbacks[i]->voidCallback((void*)this, tempEventsData[i]);
 			}
 		}
+		else if(tbr == this->br_) {
+			__disable_irq();
+			this->br_++;
+			this->br_ = this->br_ == EVENT_TIMER_EVENTS_SIZE ? 0 : this->br_;
+			__enable_irq();
+		}
+		tbr++;
+		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}
 	__disable_irq();
 	this->isQueueProcessing_ = false;
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
-		if(this->callbacks_[i]) {
-			this->start();
-			break;
-		}
+	if(this->br_ != this->bw_ && this->isStopped_) {
+		this->start();
 	}
 	__enable_irq();
 }
@@ -141,57 +150,37 @@ void EventTimer::stop(void)
 
 void EventTimer::addCyclicEvent(uint32_t periodUs, IVoidCallback* const callback, void* data)
 {
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++){
-		__disable_irq();
-		if(this->callbacks_[i] == (IVoidCallback*)NULL){
-			this->eventsData_[i] = data;
-			this->callbacks_[i] = callback;
-			this->eventsCounter_[i] = 0;
-			this->isOneTimeEvents_[i] = false;
-			this->eventsPeriod_[i] = periodUs / this->stepUs_;
-			if(this->eventsPeriod_[i] == 0)
-				this->eventsPeriod_[i] = 1;
-			if(this->isStopped_)
-				this->start();
-			__enable_irq();
-			break;
-		}
-		__enable_irq();
-	}
+
 }
 
 
 
 void EventTimer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data)
 {
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++){
-		__disable_irq();
-		if(this->callbacks_[i] == (IVoidCallback*)NULL){
-			this->eventsData_[i] = data;
-			this->callbacks_[i] = callback;
-			this->eventsCounter_[i] = 0;
-			this->isOneTimeEvents_[i] = true;
-			this->eventsPeriod_[i] = delayUs / this->stepUs_;
-			if(this->eventsPeriod_[i] == 0)
-				this->eventsPeriod_[i] = 1;
-			if(this->isStopped_)
-				this->start();
-			__enable_irq();
-			break;
-		}
-		__enable_irq();
-	}
+	__disable_irq();
+	uint16_t tbw = this->bw_;
+	this->eventsData_[tbw] = data;
+	this->callbacks_[tbw] = callback;
+	this->eventsCounter_[tbw] = 0;
+	this->isOneTimeEvents_[tbw] = true;
+	this->eventsPeriod_[tbw] = delayUs / this->stepUs_;
+	if(this->eventsPeriod_[tbw] == 0) this->eventsPeriod_[tbw] = 1;
+	tbw++;
+	tbw = tbw == EVENT_TIMER_EVENTS_SIZE ? 0 : tbw;
+	this->bw_ = tbw;
+	if(this->isStopped_)
+		this->start();
+	__enable_irq();
 }
 
 
 
 uint16_t EventTimer::getEventsInQueue(void)
 {
-	uint16_t retValue = 0;
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
-		if(this->callbacks_[i])
-			retValue++;
-	}
+	uint16_t tbw = this->bw_;
+	uint16_t tbr = this->br_;
+	uint16_t retValue = tbw >= tbr ?
+			(tbw - tbr) : (EVENT_TIMER_EVENTS_SIZE - tbw + tbr);
 	return retValue;
 }
 
@@ -199,18 +188,26 @@ uint16_t EventTimer::getEventsInQueue(void)
 
 void EventTimer::deleteEvent(IVoidCallback* const callback)
 {
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
+	uint16_t tbw = this->bw_;
+	uint16_t tbr = this->br_;
+	while(tbr != tbw) {
 		__disable_irq();
-		if(this->callbacks_[i] == callback) {
-			this->eventsPeriod_[i] = 0;
-			this->callbacks_[i] = (IVoidCallback*)NULL;
-			this->eventsCounter_[i] = 0;
-			this->eventsData_[i] = NULL;
-			this->isOneTimeEvents_[i] = false;
-			__enable_irq();
+		if(this->callbacks_[tbr] == callback) {
+			this->eventsPeriod_[tbr] = 0;
+			this->callbacks_[tbr] = (IVoidCallback*)NULL;
+			this->eventsCounter_[tbr] = 0;
+			this->eventsData_[tbr] = NULL;
+			this->isOneTimeEvents_[tbr] = false;
+			if(tbr == this->br_) {
+				tbr++;
+				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
+				this->br_ = tbr;
+			}
 			break;
 		}
 		__enable_irq();
+		tbr++;
+		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}
 }
 
@@ -218,19 +215,26 @@ void EventTimer::deleteEvent(IVoidCallback* const callback)
 
 void EventTimer::deleteEvent(IVoidCallback* const callback, void* const data)
 {
-	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
+	uint16_t tbw = this->bw_;
+	uint16_t tbr = this->br_;
+	while(tbr != tbw) {
 		__disable_irq();
-		if((this->callbacks_[i] == callback) &&
-				(this->eventsData_[i] == data)) {
-			this->eventsPeriod_[i] = 0;
-			this->callbacks_[i] = (IVoidCallback*)NULL;
-			this->eventsCounter_[i] = 0;
-			this->eventsData_[i] = NULL;
-			this->isOneTimeEvents_[i] = false;
-			__enable_irq();
+		if(this->callbacks_[tbr] == callback && this->eventsData_[tbr] == data) {
+			this->eventsPeriod_[tbr] = 0;
+			this->callbacks_[tbr] = (IVoidCallback*)NULL;
+			this->eventsCounter_[tbr] = 0;
+			this->eventsData_[tbr] = NULL;
+			this->isOneTimeEvents_[tbr] = false;
+			if(tbr == this->br_) {
+				tbr++;
+				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
+				this->br_ = tbr;
+			}
 			break;
 		}
 		__enable_irq();
+		tbr++;
+		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}
 }
 

@@ -60,6 +60,10 @@ protected:
 	uint32_t eventsPeriod_[ EVENT_TIMER_EVENTS_SIZE ];
 	uint32_t eventsCounter_[ EVENT_TIMER_EVENTS_SIZE ];
 	bool isOneTimeEvents_[ EVENT_TIMER_EVENTS_SIZE ];
+	#if !EVENT_TIMER_USE_CYCLIC_EVENTS
+	uint16_t bw_ = 0;
+	uint16_t br_ = 0;
+	#endif
 };
 
 }
