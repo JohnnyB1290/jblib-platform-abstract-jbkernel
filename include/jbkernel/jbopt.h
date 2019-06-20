@@ -422,4 +422,25 @@
 #define DNS_SERVER_HOST_NAME_1					((char*)"www.device.johnnyb")
 #endif
 
+/*
+   ------------------------------------
+   ------ Web Socket Channel ----------
+   ------------------------------------
+*/
+
+/**
+ * WS_CHANNEL_URI_MAX_SIZE
+ */
+#if !defined WS_CHANNEL_URI_MAX_SIZE
+#define WS_CHANNEL_URI_MAX_SIZE					128
+#endif
+
+/**
+ * WS_CHANNEL_MAX_NUM_CONNECTIONS
+ */
+#if !defined WS_CHANNEL_MAX_NUM_CONNECTIONS
+#define WS_CHANNEL_MAX_NUM_CONNECTIONS			8
+#endif
+
+
 #endif /*  JBOPT_H_ */
