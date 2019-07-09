@@ -33,6 +33,7 @@
  * JB_LIB_PLATFORM
  * JB_LIB_PLATFORM == 0 LPC43XX
  * JB_LIB_PLATFORM == 1 ZYNQ
+ * JB_LIB_PLATFORM == 2 i.MXRT
  */
 #if !defined JB_LIB_PLATFORM
 #error "JB_Lib: Please define platform!"
@@ -42,6 +43,8 @@
 #include "jbkernel/lpc43xx_jbdrivers_opts.h"
 #elif JB_LIB_PLATFORM == 1
 #include "jbkernel/zynq_jbdrivers_opts.h"
+#elif JB_LIB_PLATFORM == 2
+#include "jbkernel/imxrt_jbdrivers_opt.h"
 #endif
 
 /**

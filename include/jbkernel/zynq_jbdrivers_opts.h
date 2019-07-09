@@ -4,7 +4,7 @@
  *
  *
  * @note
- * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
+ * Copyright Â© 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
  * All rights reserved.
  * @note
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -136,14 +136,14 @@
  * JBCONTROLLER_NUM_NOP_DELAY_US
  */
 #if !defined JBCONTROLLER_NUM_NOP_DELAY_US
-#define JBCONTROLLER_NUM_NOP_DELAY_US			250  //For 667 MHz clock
+#define JBCONTROLLER_NUM_NOP_DELAY_US			250  //For 667 MHz clock (for O3 optimization)
 #endif
 
 /**
  * JBCONTROLLER_NUM_NOP_DELAY_MS
  */
 #if !defined JBCONTROLLER_NUM_NOP_DELAY_MS
-#define JBCONTROLLER_NUM_NOP_DELAY_MS 			250000  //For 667 MHz clock
+#define JBCONTROLLER_NUM_NOP_DELAY_MS 			250000  //For 667 MHz clock (for O3 optimization)
 #endif
 
 

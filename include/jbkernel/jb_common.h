@@ -54,6 +54,11 @@ typedef uint8_t EthernetFrame[XEMACPS_MAX_VLAN_FRAME_SIZE] __attribute__ ((align
 
 #define __disable_irq() 	Xil_ExceptionDisable()
 #define __enable_irq()		Xil_ExceptionEnable()
+
+#elif JB_LIB_PLATFORM == 2  //i.MXRT
+#include "fsl_device_registers.h"
+#define EMAC_ETH_MAX_FLEN 		1536
+typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #endif
 
 #define IS_POWER_OF_TWO(x) ((x) && !((x) & ((x)-1)))
