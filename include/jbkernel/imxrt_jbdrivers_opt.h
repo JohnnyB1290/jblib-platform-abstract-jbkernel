@@ -45,13 +45,6 @@ typedef struct{
 #endif
 
 /**
- * JBCONTROLLER_NUM_MAIN_PROCEDURES
- */
-#if !defined JBCONTROLLER_NUM_MAIN_PROCEDURES
-#define JBCONTROLLER_NUM_MAIN_PROCEDURES				16
-#endif
-
-/**
  * JBCONTROLLER_NUM_NOP_DELAY_US
  */
 #if !defined JBCONTROLLER_NUM_NOP_DELAY_US
@@ -67,24 +60,16 @@ typedef struct{
 
 /*
    ------------------------------------
-   ----------- IRQ Controller ---------
+   ------------- Sys Tick -------------
    ------------------------------------
 */
 
 /**
- * IRQ_CONTROLLER_NUM_CORTEX_LISTENERS
+ * SYS_TICK_INTERRUPT_PRIORITY
  */
-#if !defined IRQ_CONTROLLER_NUM_CORTEX_LISTENERS
-#define IRQ_CONTROLLER_NUM_CORTEX_LISTENERS			2
+#if !defined SYS_TICK_INTERRUPT_PRIORITY
+#define SYS_TICK_INTERRUPT_PRIORITY			15
 #endif
-
-/**
- * IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
- */
-#if !defined IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
-#define IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS		16
-#endif
-
 
 
 #endif /* LPC43XX_JBDRIVERS_OPTS_H_ */
