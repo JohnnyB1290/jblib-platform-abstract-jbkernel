@@ -47,7 +47,7 @@ extern "C" {
 int _write(int iFileHandle, char *pcBuffer, int iLength)
 {
 	Console::getConsole()->getTxRingBuffer()->insertMult((uint8_t*)pcBuffer, iLength);
-	return 0;
+	return iLength;
 }
 
 #else
