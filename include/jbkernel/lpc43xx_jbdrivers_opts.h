@@ -942,7 +942,7 @@ typedef struct{
 #endif
 
 /**
- * UART_2_RX
+ * UART_3_RX
  */
 #if !defined UART_3_RX_PORT
 #define UART_3_RX_PORT					6
