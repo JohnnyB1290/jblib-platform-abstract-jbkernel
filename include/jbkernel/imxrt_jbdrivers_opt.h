@@ -71,5 +71,70 @@ typedef struct{
 #define SYS_TICK_INTERRUPT_PRIORITY			15
 #endif
 
+#if JBDRIVERS_USE_LPUART
+/*
+   ------------------------------------
+   --------------- UART ---------------
+   ------------------------------------
+*/
+
+/**
+ * UART_1_INTERRUPT_PRIORITY
+ */
+#if !defined UART_1_INTERRUPT_PRIORITY
+#define UART_1_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_2_INTERRUPT_PRIORITY
+ */
+#if !defined UART_2_INTERRUPT_PRIORITY
+#define UART_2_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_3_INTERRUPT_PRIORITY
+ */
+#if !defined UART_3_INTERRUPT_PRIORITY
+#define UART_3_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_4_INTERRUPT_PRIORITY
+ */
+#if !defined UART_4_INTERRUPT_PRIORITY
+#define UART_4_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_5_INTERRUPT_PRIORITY
+ */
+#if !defined UART_5_INTERRUPT_PRIORITY
+#define UART_5_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_6_INTERRUPT_PRIORITY
+ */
+#if !defined UART_6_INTERRUPT_PRIORITY
+#define UART_6_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_7_INTERRUPT_PRIORITY
+ */
+#if !defined UART_7_INTERRUPT_PRIORITY
+#define UART_7_INTERRUPT_PRIORITY			15
+#endif
+
+/**
+ * UART_8_INTERRUPT_PRIORITY
+ */
+#if !defined UART_8_INTERRUPT_PRIORITY
+#define UART_8_INTERRUPT_PRIORITY			15
+#endif
+
+#endif
+
 
 #endif /* LPC43XX_JBDRIVERS_OPTS_H_ */
