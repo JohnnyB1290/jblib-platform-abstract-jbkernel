@@ -75,7 +75,7 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 
 #if USE_THREAD_SAFE_MALLOC == 1
 
-__inline void* malloc_s(size_t size)
+static __inline void* malloc_s(size_t size)
 {
 	void* ret_ptr = NULL;
 	disableInterrupts();
@@ -84,7 +84,7 @@ __inline void* malloc_s(size_t size)
 	return ret_ptr;
 }
 
-__inline void free_s(void * ptr)
+static __inline void free_s(void * ptr)
 {
 	disableInterrupts();
 	free(ptr);
