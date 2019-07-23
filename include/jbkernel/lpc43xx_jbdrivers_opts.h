@@ -71,26 +71,6 @@ typedef struct{
 
 /*
    ------------------------------------
-   ----------- IRQ Controller ---------
-   ------------------------------------
-*/
-
-/**
- * IRQ_CONTROLLER_NUM_CORTEX_LISTENERS
- */
-#if !defined IRQ_CONTROLLER_NUM_CORTEX_LISTENERS
-#define IRQ_CONTROLLER_NUM_CORTEX_LISTENERS			2
-#endif
-
-/**
- * IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
- */
-#if !defined IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
-#define IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS		16
-#endif
-
-/*
-   ------------------------------------
    ----------- Ethernet Phy -----------
    ------------------------------------
 */
