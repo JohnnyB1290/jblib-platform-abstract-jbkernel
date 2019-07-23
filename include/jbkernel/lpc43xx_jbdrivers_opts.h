@@ -59,14 +59,14 @@ typedef struct{
  * JBCONTROLLER_NUM_NOP_DELAY_US
  */
 #if !defined JBCONTROLLER_NUM_NOP_DELAY_US
-#define JBCONTROLLER_NUM_NOP_DELAY_US			39  //For 204 MHz clock
+#define JBCONTROLLER_NUM_NOP_DELAY_US			39  //For 204 MHz clock  (for O3 optimization)
 #endif
 
 /**
  * JBCONTROLLER_NUM_NOP_DELAY_MS
  */
 #if !defined JBCONTROLLER_NUM_NOP_DELAY_MS
-#define JBCONTROLLER_NUM_NOP_DELAY_MS 			40824  //For 204 MHz clock
+#define JBCONTROLLER_NUM_NOP_DELAY_MS 			40824  //For 204 MHz clock  (for O3 optimization)
 #endif
 
 /*
@@ -942,7 +942,7 @@ typedef struct{
 #endif
 
 /**
- * UART_2_RX
+ * UART_3_RX
  */
 #if !defined UART_3_RX_PORT
 #define UART_3_RX_PORT					6
