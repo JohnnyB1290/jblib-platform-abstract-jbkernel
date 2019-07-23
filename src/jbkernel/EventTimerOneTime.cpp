@@ -55,12 +55,12 @@ EventTimer::EventTimer(IVoidTimer* const voidTimer) : IVoidCallback()
 
 void EventTimer::voidCallback(void* const source, void* parameter)
 {
-	__disable_irq();
+	disableInterrupts();
 	this->stop();
 	this->isQueueProcessing_ = true;
 	uint16_t tbw = this->bw_;
 	uint16_t tbr = this->br_;
-	__enable_irq();
+	enableInterrupts();
 
 	while(tbr != tbw) {
 		if(this->callbacks_[tbr]) {
@@ -74,29 +74,29 @@ void EventTimer::voidCallback(void* const source, void* parameter)
 				this->isOneTimeEvents_[tbr] = false;
 				this->callbacks_[tbr] = (IVoidCallback*)NULL;
 				if(tbr == this->br_) {
-					__disable_irq();
+					disableInterrupts();
 					this->br_++;
 					this->br_ = this->br_ == EVENT_TIMER_EVENTS_SIZE ?
 									0 : this->br_;
-					__enable_irq();
+					enableInterrupts();
 				}
 			}
 		}
 		else if(tbr == this->br_) {
-			__disable_irq();
+			disableInterrupts();
 			this->br_++;
 			this->br_ = this->br_ == EVENT_TIMER_EVENTS_SIZE ? 0 : this->br_;
-			__enable_irq();
+			enableInterrupts();
 		}
 		tbr++;
 		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}
-	__disable_irq();
+	disableInterrupts();
 	this->isQueueProcessing_ = false;
 	if(this->br_ != this->bw_ && this->isStopped_) {
 		this->start();
 	}
-	__enable_irq();
+	enableInterrupts();
 }
 
 
@@ -127,10 +127,10 @@ void EventTimer::start(void)
 		return;
 	if(this->voidTimer_ == (IVoidTimer*) NULL)
 		return;
-	__disable_irq();
+	disableInterrupts();
 	this->voidTimer_->start();
 	this->isStopped_ = false;
-	__enable_irq();
+	enableInterrupts();
 }
 
 
@@ -139,11 +139,11 @@ void EventTimer::stop(void)
 {
 	if(this->voidTimer_ == (IVoidTimer*) NULL)
 		return;
-	__disable_irq();
+	disableInterrupts();
 	this->voidTimer_->reset();
 	this->voidTimer_->stop();
 	this->isStopped_ = true;
-	__enable_irq();
+	enableInterrupts();
 }
 
 
@@ -157,7 +157,7 @@ void EventTimer::addCyclicEvent(uint32_t periodUs, IVoidCallback* const callback
 
 void EventTimer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data)
 {
-	__disable_irq();
+	disableInterrupts();
 	uint16_t tbw = this->bw_;
 	this->eventsData_[tbw] = data;
 	this->callbacks_[tbw] = callback;
@@ -170,7 +170,7 @@ void EventTimer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback
 	this->bw_ = tbw;
 	if(this->isStopped_)
 		this->start();
-	__enable_irq();
+	enableInterrupts();
 }
 
 
@@ -191,7 +191,7 @@ void EventTimer::deleteEvent(IVoidCallback* const callback)
 	uint16_t tbw = this->bw_;
 	uint16_t tbr = this->br_;
 	while(tbr != tbw) {
-		__disable_irq();
+		disableInterrupts();
 		if(this->callbacks_[tbr] == callback) {
 			this->eventsPeriod_[tbr] = 0;
 			this->callbacks_[tbr] = (IVoidCallback*)NULL;
@@ -203,10 +203,10 @@ void EventTimer::deleteEvent(IVoidCallback* const callback)
 				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 				this->br_ = tbr;
 			}
-			__enable_irq();
+			enableInterrupts();
 			break;
 		}
-		__enable_irq();
+		enableInterrupts();
 		tbr++;
 		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}
@@ -219,7 +219,7 @@ void EventTimer::deleteEvent(IVoidCallback* const callback, void* const data)
 	uint16_t tbw = this->bw_;
 	uint16_t tbr = this->br_;
 	while(tbr != tbw) {
-		__disable_irq();
+		disableInterrupts();
 		if(this->callbacks_[tbr] == callback && this->eventsData_[tbr] == data) {
 			this->eventsPeriod_[tbr] = 0;
 			this->callbacks_[tbr] = (IVoidCallback*)NULL;
@@ -231,10 +231,10 @@ void EventTimer::deleteEvent(IVoidCallback* const callback, void* const data)
 				tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 				this->br_ = tbr;
 			}
-			__enable_irq();
+			enableInterrupts();
 			break;
 		}
-		__enable_irq();
+		enableInterrupts();
 		tbr++;
 		tbr = tbr == EVENT_TIMER_EVENTS_SIZE ? 0 : tbr;
 	}

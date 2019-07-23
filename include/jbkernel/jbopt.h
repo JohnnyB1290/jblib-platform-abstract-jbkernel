@@ -63,6 +63,12 @@
 #define USE_LWIP		0
 #endif
 
+/**
+ * USE_NESTED_CRITICAL_SECTIONS
+ */
+#if !defined USE_NESTED_CRITICAL_SECTIONS
+#define USE_NESTED_CRITICAL_SECTIONS			0
+#endif
 /*
    ------------------------------------
    ------------- Console --------------

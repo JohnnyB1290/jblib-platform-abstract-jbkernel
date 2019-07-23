@@ -61,9 +61,44 @@ typedef uint8_t EthernetFrame[XEMACPS_MAX_VLAN_FRAME_SIZE] __attribute__ ((align
 typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #endif
 
+#if USE_NESTED_CRITICAL_SECTIONS == 1
+
+#include "jbkernel/CriticalSections.h"
+
+#define disableInterrupts()		 criticalSection(1)
+#define enableInterrupts()  	 criticalSection(0)
+
+#else
+#define disableInterrupts()		 __disable_irq()
+#define enableInterrupts()  	 __enable_irq()
+#endif
+
+#if USE_THREAD_SAFE_MALLOC == 1
+
+__inline void* malloc_s(size_t size)
+{
+	void* ret_ptr = NULL;
+	disableInterrupts();
+	ret_ptr = malloc(size);
+	enableInterrupts();
+	return ret_ptr;
+}
+
+__inline void free_s(void * ptr)
+{
+	disableInterrupts();
+	free(ptr);
+	enableInterrupts();
+}
+
+#else
+#define malloc_s malloc
+#define free_s free
+#endif
+
 #define IS_POWER_OF_TWO(x) ((x) && !((x) & ((x)-1)))
 
-#define CRITICAL_SECTION(code) { __disable_irq(); \
+#define CRITICAL_SECTION(code) { disableInterrupts(); \
 								code \
 								__enable_irq(); }
 
@@ -88,27 +123,5 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #define D_A_MIN_B_MOD_C(a,b,c) (((a) >= (b))? \
 							   (((a) - (b))):(((a) + (c)) - (b)))
 
-
-#if USE_THREAD_SAFE_MALLOC == 1
-
-__inline void* malloc_s(size_t size)
-{
-	void* ret_ptr = NULL;
-	__disable_irq();
-	ret_ptr = malloc(size);
-	__enable_irq();
-	return ret_ptr;
-}
-
-__inline void free_s(void * ptr)
-{
-	__disable_irq();
-	free(ptr);
-	__enable_irq();
-}
-#else
-#define malloc_s malloc
-#define free_s free
-#endif
 
 #endif /*  JB_COMMON_H_ */

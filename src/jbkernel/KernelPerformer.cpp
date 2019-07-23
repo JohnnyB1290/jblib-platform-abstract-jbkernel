@@ -46,11 +46,11 @@ void KernelPerformer::voidCallback(void* const source, void* parameter)
 	uint32_t tempBw;
 	uint32_t tempBr;
 
-	__disable_irq();
+	disableInterrupts();
 	this->stop();
 	tempBw = this->eventBw_;
 	tempBr = this->eventBr_;
-	__enable_irq();
+	enableInterrupts();
 
 	while(tempBw != tempBr) {
 		if(!this->isEventsReady_[tempBr])
@@ -71,7 +71,7 @@ void KernelPerformer::voidCallback(void* const source, void* parameter)
 
 void KernelPerformer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data)
 {
-	__disable_irq();
+	disableInterrupts();
 	uint32_t tempBw = this->eventBw_++;
 	this->eventBw_ =
 			( this->eventBw_ == EVENT_TIMER_EVENTS_SIZE ) ? 0 : this->eventBw_;
@@ -79,7 +79,7 @@ void KernelPerformer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const cal
 	this->callbacks_[tempBw] = callback;
 	this->isEventsReady_[tempBw] = true;
 	this->start();
-	__enable_irq();
+	enableInterrupts();
 }
 
 
