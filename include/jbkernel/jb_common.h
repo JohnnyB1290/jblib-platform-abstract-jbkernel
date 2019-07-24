@@ -100,7 +100,7 @@ static __inline void free_s(void * ptr)
 
 #define CRITICAL_SECTION(code) { disableInterrupts(); \
 								code \
-								__enable_irq(); }
+								enableInterrupts(); }
 
 #define LONG_TO_BIN(n) ((((n) >> 21 ) & 0x80) | \
 					 (((n) >> 18 ) & 0x40)  | \
