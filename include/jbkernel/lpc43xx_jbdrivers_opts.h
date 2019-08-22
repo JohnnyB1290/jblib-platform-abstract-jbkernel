@@ -36,6 +36,26 @@ typedef struct{
 
 /*
    ------------------------------------
+   ------------- JBKERNEL -------------
+   ------------------------------------
+*/
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_US
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_US
+#define JBKERNEL_NUM_NOP_DELAY_US			39  //For 204 MHz clock  (for O3 optimization)
+#endif
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_MS
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_MS
+#define JBKERNEL_NUM_NOP_DELAY_MS 			40824  //For 204 MHz clock  (for O3 optimization)
+#endif
+
+/*
+   ------------------------------------
    ------------- JBCONTROLLER ---------
    ------------------------------------
 */
@@ -46,27 +66,6 @@ typedef struct{
 #if !defined JBCONTROLLER_BOARD_GPIOS
 #define JBCONTROLLER_BOARD_GPIOS				{{2, 12, 1, 12, SCU_MODE_FUNC0},\
 											 	 {2, 11, 1, 11, SCU_MODE_FUNC0},}
-#endif
-
-/**
- * JBCONTROLLER_NUM_MAIN_PROCEDURES
- */
-#if !defined JBCONTROLLER_NUM_MAIN_PROCEDURES
-#define JBCONTROLLER_NUM_MAIN_PROCEDURES				16
-#endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_US
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_US
-#define JBCONTROLLER_NUM_NOP_DELAY_US			39  //For 204 MHz clock  (for O3 optimization)
-#endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_MS
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_MS
-#define JBCONTROLLER_NUM_NOP_DELAY_MS 			40824  //For 204 MHz clock  (for O3 optimization)
 #endif
 
 /*

@@ -93,6 +93,26 @@
 
 /*
    ------------------------------------
+   ------------- JBKERNEL -------------
+   ------------------------------------
+*/
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_US
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_US
+#define JBKERNEL_NUM_NOP_DELAY_US			250  //For 667 MHz clock (for O3 optimization)
+#endif
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_MS
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_MS
+#define JBKERNEL_NUM_NOP_DELAY_MS 			250000  //For 667 MHz clock (for O3 optimization)
+#endif
+
+/*
+   ------------------------------------
    ----------- JB Controller ----------
    ------------------------------------
 */
@@ -131,21 +151,6 @@
 #if !defined JBCONTROLLER_BOARD_GPIOS
 #define JBCONTROLLER_BOARD_GPIOS				{59,60}
 #endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_US
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_US
-#define JBCONTROLLER_NUM_NOP_DELAY_US			250  //For 667 MHz clock (for O3 optimization)
-#endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_MS
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_MS
-#define JBCONTROLLER_NUM_NOP_DELAY_MS 			250000  //For 667 MHz clock (for O3 optimization)
-#endif
-
 
 /*
    ------------------------------------

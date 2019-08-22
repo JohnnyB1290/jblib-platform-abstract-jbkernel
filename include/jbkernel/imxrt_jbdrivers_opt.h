@@ -33,6 +33,26 @@ typedef struct{
 
 /*
    ------------------------------------
+   ------------- JBKERNEL -------------
+   ------------------------------------
+*/
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_US
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_US
+#define JBKERNEL_NUM_NOP_DELAY_US			300  //For 600 MHz clock  (for O3 optimization)
+#endif
+
+/**
+ * JBKERNEL_NUM_NOP_DELAY_MS
+ */
+#if !defined JBKERNEL_NUM_NOP_DELAY_MS
+#define JBKERNEL_NUM_NOP_DELAY_MS 			399000  //For 600 MHz clock  (for O3 optimization)
+#endif
+
+/*
+   ------------------------------------
    ------------- JBCONTROLLER ---------
    ------------------------------------
 */
@@ -42,20 +62,6 @@ typedef struct{
  */
 #if !defined JBCONTROLLER_BOARD_GPIOS
 #define JBCONTROLLER_BOARD_GPIOS				{{(unsigned int)GPIO1 , 9}}
-#endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_US
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_US
-#define JBCONTROLLER_NUM_NOP_DELAY_US					300  //For 600 MHz clock  (for O3 optimization)
-#endif
-
-/**
- * JBCONTROLLER_NUM_NOP_DELAY_MS
- */
-#if !defined JBCONTROLLER_NUM_NOP_DELAY_MS
-#define JBCONTROLLER_NUM_NOP_DELAY_MS 					399000  //For 600 MHz clock  (for O3 optimization)
 #endif
 
 /*
