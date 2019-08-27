@@ -429,14 +429,6 @@
    ------ Web Socket Channel ----------
    ------------------------------------
 */
-
-/**
- * WS_CHANNEL_URI_MAX_SIZE
- */
-#if !defined WS_CHANNEL_URI_MAX_SIZE
-#define WS_CHANNEL_URI_MAX_SIZE					128
-#endif
-
 /**
  * WS_CHANNEL_MAX_NUM_CONNECTIONS
  */
