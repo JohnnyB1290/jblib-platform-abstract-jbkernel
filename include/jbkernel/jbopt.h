@@ -269,11 +269,12 @@
 */
 
 /**
- *  STORAGE_CONTROLLER_NUM_DEVICES
+ * USE_FAT_FS
  */
-#if !defined STORAGE_CONTROLLER_NUM_DEVICES
-#define STORAGE_CONTROLLER_NUM_DEVICES					1
+#if !defined USE_FAT_FS
+#define USE_FAT_FS										0
 #endif
+
 
 /**
  * FAT_FS_USE_CONSOLE
