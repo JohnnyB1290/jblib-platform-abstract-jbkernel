@@ -427,14 +427,43 @@
 
 /*
    ------------------------------------
-   ------ Web Socket Channel ----------
+   --------- JB Tftp Server -----------
    ------------------------------------
 */
+
 /**
- * WS_CHANNEL_MAX_NUM_CONNECTIONS
+ * JB_TFTP_SERVER_USE_CONSOLE
  */
-#if !defined WS_CHANNEL_MAX_NUM_CONNECTIONS
-#define WS_CHANNEL_MAX_NUM_CONNECTIONS			8
+#if !defined JB_TFTP_SERVER_USE_CONSOLE
+#define JB_TFTP_SERVER_USE_CONSOLE					0
+#endif
+
+/**
+ * JB_TFTP_SERVER_TIMEOUT_MS
+ */
+#if !defined JB_TFTP_SERVER_TIMEOUT_MS
+#define JB_TFTP_SERVER_TIMEOUT_MS					10000
+#endif
+
+/**
+ * JB_TFTP_SERVER_MAX_RETRIES
+ */
+#if !defined JB_TFTP_SERVER_MAX_RETRIES
+#define JB_TFTP_SERVER_MAX_RETRIES					5
+#endif
+
+/**
+ * JB_TFTP_SERVER_TIMER_MS
+ */
+#if !defined JB_TFTP_SERVER_TIMER_MS
+#define JB_TFTP_SERVER_TIMER_MS						(JB_TFTP_SERVER_TIMEOUT_MS / 10)
+#endif
+
+/**
+ * JB_TFTP_SERVER_MAX_PAYLOAD_SIZE
+ */
+#if !defined JB_TFTP_SERVER_MAX_PAYLOAD_SIZE
+#define JB_TFTP_SERVER_MAX_PAYLOAD_SIZE				512
 #endif
 
 
