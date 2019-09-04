@@ -2,8 +2,6 @@
  * @file
  * @brief IVoidMemory Interface Description
  *
- * Event Timer for cycling/one time events.
- *
  * @note
  * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
  * All rights reserved.

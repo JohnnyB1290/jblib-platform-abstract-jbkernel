@@ -2,8 +2,6 @@
  * @file
  * @brief IVoidMemory Interface Realization
  *
- * Event Timer for cycling/one time events.
- *
  * @note
  * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
  * All rights reserved.
@@ -74,7 +72,9 @@ void IVoidMemory::enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells)
 		this->cacheSizeCells_ = cacheSizeCells;
 		this->cache_ = (CacheCell_t*)malloc_s(sizeof(CacheCell_t) * this->cacheSizeCells_);
 		if(!this->cache_){
+			#if USE_CONSOLE
 			printf("IVoid Memory Error: No heap for cache!\n");
+			#endif
 			return;
 		}
 		for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
@@ -83,12 +83,16 @@ void IVoidMemory::enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells)
 			this->cache_[i].cache = (uint8_t*)malloc_s(cacheCellSize);
 			if(!this->cache_[i].cache){
 				if(!i){
+					#if USE_CONSOLE
 					printf("IVoid Memory Error: No heap for cache!\n");
+					#endif
 					free_s(this->cache_);
 					return;
 				}
 				else{
+					#if USE_CONSOLE
 					printf("IVoid Memory Error: No heap for cache! Trunc to %lu cells\n", i);
+					#endif
 					this->cacheSizeCells_ = i;
 					break;
 				}
