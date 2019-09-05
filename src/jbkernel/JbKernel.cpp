@@ -60,7 +60,7 @@ void JbKernel::doMain(void)
 {
 	for(std::forward_list<JbKernel::ProceduresListItem>::iterator
 			it = mainProceduresList_.begin();
-			it != mainProceduresList_.end(); it++){
+			it != mainProceduresList_.end(); ++it){
 		it->procedure->voidCallback(NULL,
 				it->parameter);
 	}
