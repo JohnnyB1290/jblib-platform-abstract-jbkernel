@@ -33,14 +33,14 @@
 #include "jbkernel/jb_common.h"
 #include "jbkernel/IVoidChannel.hpp"
 #include "jbkernel/IVoidFileSystem.hpp"
-
+#include "jbkernel/VoidChannelMsgQueue.hpp"
 
 namespace jblib
 {
 namespace jbkernel
 {
 
-class JbTftpServer : public IChannelCallback, public IVoidCallback
+class JbTftpServer : public IVoidCallback
 {
 public:
 	JbTftpServer(IVoidFileSystem* fileSystem, IVoidChannel* channel, uint8_t nrtTimerNum);
@@ -63,8 +63,6 @@ private:
 		JBTFTP_ERROR_WRONG_OPTION      = 8,
 	}JbTftpErrorCode_t;
 
-	virtual void channelCallback(uint8_t* const buffer, const uint16_t size,
-			void* const source, void* parameter);
 	virtual void voidCallback(void* const source, void* parameter);
 	void close(void);
 	void resendData(void);
@@ -77,6 +75,7 @@ private:
 	uint8_t nrtTimerNum_ = 0;
 	IVoidFileSystem* fileSystem_ = NULL;
 	IVoidChannel* channel_ = NULL;
+	VoidChannelMsgQueue* msgQueue_ = NULL;
 
 	void* file_ = NULL;
 	uint32_t timerCounter_ = 0;

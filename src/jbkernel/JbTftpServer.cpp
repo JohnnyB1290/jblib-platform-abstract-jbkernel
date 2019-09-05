@@ -58,18 +58,19 @@ enum JbTftpPacketType_t
 
 
 JbTftpServer::JbTftpServer(IVoidFileSystem* fileSystem,
-		IVoidChannel* channel, uint8_t nrtTimerNum) : IChannelCallback(), IVoidCallback()
+		IVoidChannel* channel, uint8_t nrtTimerNum) : IVoidCallback()
 {
 	this->nrtTimerNum_ = nrtTimerNum;
 	this->fileSystem_ = fileSystem;
 	this->channel_ = channel;
+	this->msgQueue_ = new VoidChannelMsgQueue(this);
 }
 
 
 
 JbTftpServer::~JbTftpServer(void)
 {
-
+	delete (this->msgQueue_);
 }
 
 
@@ -77,8 +78,8 @@ JbTftpServer::~JbTftpServer(void)
 void JbTftpServer::initialize(void)
 {
 	if(!this->isInitialized_){
-		this->channel_->initialize(malloc_s,
-					JB_TFTP_SERVER_HEADER_LENGTH + JB_TFTP_SERVER_MAX_PAYLOAD_SIZE, this);
+		this->channel_->initialize(malloc_s, JB_TFTP_SERVER_HEADER_LENGTH +
+				JB_TFTP_SERVER_MAX_PAYLOAD_SIZE, this->msgQueue_);
 		this->timerCounter_ = 0;
 		this->lastData_ = NULL;
 		this->channelParameter_ = NULL;
@@ -101,7 +102,6 @@ void JbTftpServer::deInitialize(void)
 		if(this->isTimerEnabled_)
 			return;
 		this->channel_->deinitialize();
-		this->channelParameter_ = NULL;
 		this->timerCounter_ = 0;
 		this->lastPacketTime_ = 0;
 		this->retries_ = 0;
@@ -121,7 +121,12 @@ bool JbTftpServer::isInitialized(void)
 
 void JbTftpServer::close(void)
 {
-	this->channelParameter_ = NULL;
+	if(this->channelParameter_){
+		free_s(((IVoidChannel::ConnectionParameter_t*)this->channelParameter_)->
+				parameters);
+		free_s(this->channelParameter_);
+		this->channelParameter_ = NULL;
+	}
 	if(this->lastData_){
 		free_s(this->lastData_);
 		this->lastData_ = NULL;
@@ -140,29 +145,274 @@ void JbTftpServer::close(void)
 
 void JbTftpServer::voidCallback(void* const source, void* parameter)
 {
-	this->timerCounter_++;
-	if(!this->file_){
-		this->isTimerEnabled_ = false;
-		return;
-	}
-
-	this->isTimerEnabled_ = true;
-	TimeEngine::getTimeEngine()->setNrtEvent(this->nrtTimerNum_,
-			1000* JB_TFTP_SERVER_TIMER_MS, this, NULL);
-
-	if ((this->timerCounter_ - this->lastPacketTime_) > (JB_TFTP_SERVER_TIMEOUT_MS / JB_TFTP_SERVER_TIMER_MS)) {
-		if ((this->lastData_) && (this->retries_ < JB_TFTP_SERVER_MAX_RETRIES)) {
+	if(source == (void*)this->msgQueue_){
+		VoidChannelMsgQueue::ChannelMessage_t* msg =
+				(VoidChannelMsgQueue::ChannelMessage_t*)parameter;
+		uint16_t size = msg->dataSize;
+		uint8_t* buffer = msg->data;
+		if(size < JB_TFTP_SERVER_HEADER_LENGTH)
+			return;
+		if((this->channelParameter_) &&
+				(memcmp(((IVoidChannel::ConnectionParameter_t*)this->channelParameter_)->parameters,
+						msg->connectionParam->parameters, msg->connectionParam->parametersSize))){
 			#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-			printf("JbTftp: timeout, retrying\n");
+			printf("JbTftp: Only one connection at a time is supported\n");
 			#endif
-			this->resendData();
-			this->retries_++;
+			this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+					"Only one connection at a time is supported");
+			return;
 		}
-		else {
-			#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-			printf("JbTftp: timeout\n");
-			#endif
-			this->close();
+		uint16_t opcode = ((uint16_t*)buffer)[0];
+		this->lastPacketTime_ = this->timerCounter_;
+		this->retries_ = 0;
+
+		switch(opcode){
+			case PP_HTONS(JBTFTP_PACKET_TYPE_RRQ):
+			case PP_HTONS(JBTFTP_PACKET_TYPE_WRQ):
+			{
+				if(this->file_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp: Only one connection at a time is supported\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Only one connection at a time is supported");
+					break;
+				}
+
+				if(!this->isTimerEnabled_){
+					this->isTimerEnabled_ = true;
+					TimeEngine::getTimeEngine()->setNrtEvent(this->nrtTimerNum_,
+							1000* JB_TFTP_SERVER_TIMER_MS, this, NULL);
+				}
+
+				char* fileName = (char*)&buffer[2];
+				char* mode = (char*)memchr(fileName, 0, size - 2);
+				if(!mode){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Filename not NULL terminated\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Filename not NULL terminated");
+					break;
+				}
+				uint16_t fileNameLen = strlen(fileName) + 1;
+				if((fileNameLen == 1) || ((size - 2 - fileNameLen) <= 1)){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: No mode/not NULL terminated/File name is empty\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"No mode/not NULL terminated/File name is empty");
+					break;
+				}
+				mode++;
+				char* options = (char*)memchr(mode, 0, size - 2 - fileNameLen);
+				if(!options){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Mode not NULL terminated\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Mode not NULL terminated");
+					break;
+				}
+
+				if(strcmp(mode, "octet")){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Unsupported mode %s\n", mode);
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Unsupported mode");
+					break;
+				}
+
+				uint8_t openMode = (opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ?
+						(FA_CREATE_ALWAYS | FA_WRITE) : (FA_OPEN_EXISTING | FA_READ);
+				this->file_ = this->fileSystem_->openFile(fileName, openMode);
+				this->blockNumber_ = 1;
+
+				if(!this->file_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Unable to open requested file\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_FILE_NOT_FOUND, "Unable to open requested file");
+					break;
+				}
+
+				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+				printf("JbTftp: %s request for '%s' mode '%s'\n",
+						(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ? "write" : "read",
+								fileName, mode);
+				#endif
+
+				if(msg->connectionParam){
+					IVoidChannel::ConnectionParameter_t* chParam =
+							(IVoidChannel::ConnectionParameter_t*)malloc_s(
+									sizeof(IVoidChannel::ConnectionParameter_t));
+					if(!chParam){
+						#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+						printf("JbTftp Error: No heap\n");
+						#endif
+						this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+								"No heap memory");
+						break;
+					}
+					chParam->parameters = malloc_s(msg->connectionParam->parametersSize);
+					if(!chParam->parameters){
+						free_s(chParam);
+						#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+						printf("JbTftp Error: No heap\n");
+						#endif
+						this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+								"No heap memory");
+						return;
+					}
+
+					chParam->parametersSize = msg->connectionParam->parametersSize;
+					memcpy(chParam->parameters, msg->connectionParam->parameters,
+							msg->connectionParam->parametersSize);
+					this->channelParameter_ = chParam;
+				}
+				else
+					this->channelParameter_ = NULL;
+
+				if(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) {
+					this->writeMode_ = true;
+					this->sendAck(0);
+				}
+				else {
+					this->writeMode_ = false;
+					this->sendData();
+				}
+			}
+			break;
+
+			case PP_HTONS(JBTFTP_PACKET_TYPE_DATA):
+			{
+				if(!this->file_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: No connection\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION, "No connection");
+					break;
+				}
+				if(!this->writeMode_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Not a write connection\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION, "Not a write connection");
+					break;
+				}
+
+				uint16_t blockNumber = PP_HTONS(((uint16_t*)buffer)[1]);
+				if (blockNumber == this->blockNumber_) {
+					uint16_t dataSize = size - JB_TFTP_SERVER_HEADER_LENGTH;
+					int ret = this->fileSystem_->writeFile(this->file_,
+							&buffer[JB_TFTP_SERVER_HEADER_LENGTH], dataSize);
+					if (ret < 0) {
+						#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+						printf("JbTftp Error: Error writing file ret = %i\n", ret);
+						#endif
+						this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION, "error writing file");
+						this->close();
+					}
+					else if(ret < dataSize){
+						#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+						printf("JbTftp Error: Disk Full, need %u ret %i\n", dataSize, ret);
+						#endif
+						this->sendError(msg->connectionParam, JBTFTP_ERROR_DISK_FULL, "disk full");
+						this->close();
+					}
+					else {
+						this->sendAck(blockNumber);
+					}
+					if(dataSize < JB_TFTP_SERVER_MAX_PAYLOAD_SIZE){
+						this->close();
+					}
+					else{
+						this->blockNumber_++;
+					}
+				} else if ((uint16_t)(blockNumber + 1) == this->blockNumber_) {
+					this->sendAck(blockNumber);
+				} else {
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Wrong block number\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_UNKNOWN_TRFR_ID, "Wrong block number");
+				}
+			}
+			break;
+
+			case PP_HTONS(JBTFTP_PACKET_TYPE_ACK):
+			{
+				if(!this->file_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: No connection\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION, "No connection");
+					break;
+				}
+				if(this->writeMode_){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Not a read connection\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION, "Not a read connection");
+					break;
+				}
+
+				uint16_t blockNumber = PP_HTONS(((uint16_t*)buffer)[1]);
+				if (this->blockNumber_ != blockNumber) {
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Wrong block number\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_UNKNOWN_TRFR_ID, "Wrong block number");
+					break;
+				}
+				bool lastPacket = false;
+				if(!this->lastData_) {
+					lastPacket = (this->lastDataSize_ != (JB_TFTP_SERVER_MAX_PAYLOAD_SIZE +
+							JB_TFTP_SERVER_HEADER_LENGTH));
+				}
+				if (!lastPacket) {
+					this->blockNumber_++;
+					this->sendData();
+				} else {
+					this->close();
+				}
+			}
+			break;
+
+			default:
+			{
+				this->sendError(msg->connectionParam, JBTFTP_ERROR_ILLEGAL_OPERATION,
+						"Unknown operation");
+			}
+			break;
+		}
+	}
+	else{
+		this->timerCounter_++;
+		if(!this->file_){
+			this->isTimerEnabled_ = false;
+			return;
+		}
+
+		this->isTimerEnabled_ = true;
+		TimeEngine::getTimeEngine()->setNrtEvent(this->nrtTimerNum_,
+				1000* JB_TFTP_SERVER_TIMER_MS, this, NULL);
+
+		if ((this->timerCounter_ - this->lastPacketTime_) > (JB_TFTP_SERVER_TIMEOUT_MS / JB_TFTP_SERVER_TIMER_MS)) {
+			if ((this->lastData_) && (this->retries_ < JB_TFTP_SERVER_MAX_RETRIES)) {
+				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+				printf("JbTftp: timeout, retrying\n");
+				#endif
+				this->resendData();
+				this->retries_++;
+			}
+			else {
+				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+				printf("JbTftp: timeout\n");
+				#endif
+				this->close();
+			}
 		}
 	}
 }
@@ -231,209 +481,9 @@ void JbTftpServer::sendError(void* channelParameter, JbTftpErrorCode_t code,
 
 	((uint16_t*)data)[0] = PP_HTONS(JBTFTP_PACKET_TYPE_ERROR);
 	((uint16_t*)data)[1] = PP_HTONS(code);
-	memcpy(&(((uint16_t*)this->lastData_)[2]), description, descriptionLen + 1);
+	memcpy(&(((uint16_t*)data)[2]), description, descriptionLen + 1);
 	this->channel_->tx(data, dataSize, channelParameter);
 	free_s(data);
-}
-
-
-
-void JbTftpServer::channelCallback(uint8_t* const buffer, const uint16_t size,
-		void* const source, void* parameter)
-{
-	if(size < JB_TFTP_SERVER_HEADER_LENGTH)
-		return;
-	if((this->channelParameter_) && (this->channelParameter_ != parameter)){
-		#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-		printf("JbTftp: Only one connection at a time is supported\n");
-		#endif
-		this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION,
-				"Only one connection at a time is supported");
-		return;
-	}
-	uint16_t opcode = ((uint16_t*)buffer)[0];
-	this->lastPacketTime_ = this->timerCounter_;
-	this->retries_ = 0;
-
-	switch(opcode){
-		case PP_HTONS(JBTFTP_PACKET_TYPE_RRQ):
-		case PP_HTONS(JBTFTP_PACKET_TYPE_WRQ):
-		{
-			if(this->file_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp: Only one connection at a time is supported\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Only one connection at a time is supported");
-				break;
-			}
-
-			if(!this->isTimerEnabled_){
-				this->isTimerEnabled_ = true;
-				TimeEngine::getTimeEngine()->setNrtEvent(this->nrtTimerNum_,
-						1000* JB_TFTP_SERVER_TIMER_MS, this, NULL);
-			}
-
-			char* fileName = (char*)&buffer[2];
-			char* mode = (char*)memchr(fileName, 0, size - 2);
-			if(!mode){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Filename not NULL terminated\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Filename not NULL terminated");
-				break;
-			}
-			uint16_t fileNameLen = strlen(fileName) + 1;
-			if((fileNameLen == 1) || ((size - 2 - fileNameLen) <= 1)){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: No mode/not NULL terminated/File name is empty\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "No mode/not NULL terminated/File name is empty");
-				break;
-			}
-			mode++;
-			char* options = (char*)memchr(mode, 0, size - 2 - fileNameLen);
-			if(!options){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Mode not NULL terminated\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Mode not NULL terminated");
-				break;
-			}
-
-			if(strcmp(mode, "octet")){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Unsupported mode %s\n", mode);
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Unsupported mode");
-				break;
-			}
-
-			uint8_t openMode = (opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ?
-					(FA_CREATE_ALWAYS | FA_WRITE) : (FA_OPEN_EXISTING | FA_READ);
-			this->file_ = this->fileSystem_->openFile(fileName, openMode);
-			this->blockNumber_ = 1;
-
-			if(!this->file_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Unable to open requested file\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_FILE_NOT_FOUND, "Unable to open requested file");
-				break;
-			}
-
-			#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-			printf("JbTftp: %s request for '%s' mode '%s'\n",
-					(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ? "write" : "read",
-							fileName, mode);
-			#endif
-
-			this->channelParameter_ = parameter;
-
-			if(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) {
-				this->writeMode_ = true;
-				this->sendAck(0);
-			}
-			else {
-				this->writeMode_ = false;
-				this->sendData();
-			}
-		}
-		break;
-
-		case PP_HTONS(JBTFTP_PACKET_TYPE_DATA):
-		{
-			if(!this->file_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: No connection\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "No connection");
-				break;
-			}
-			if(!this->writeMode_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Not a write connection\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Not a write connection");
-				break;
-			}
-
-			uint16_t blockNumber = PP_HTONS(((uint16_t*)buffer)[1]);
-			if (blockNumber == this->blockNumber_) {
-				uint16_t dataSize = size - JB_TFTP_SERVER_HEADER_LENGTH;
-				int ret = this->fileSystem_->writeFile(this->file_,
-						&buffer[JB_TFTP_SERVER_HEADER_LENGTH], dataSize);
-				if (ret < 0) {
-					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-					printf("JbTftp Error: Error writing file\n");
-					#endif
-					this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "error writing file");
-					break;
-					this->close();
-				} else {
-					this->sendAck(blockNumber);
-				}
-				if(dataSize < JB_TFTP_SERVER_MAX_PAYLOAD_SIZE){
-					this->close();
-				}
-				else{
-					this->blockNumber_++;
-				}
-			} else if ((uint16_t)(blockNumber + 1) == this->blockNumber_) {
-				this->sendAck(blockNumber);
-			} else {
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Wrong block number\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_UNKNOWN_TRFR_ID, "Wrong block number");
-			}
-		}
-		break;
-
-		case PP_HTONS(JBTFTP_PACKET_TYPE_ACK):
-		{
-			if(!this->file_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: No connection\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "No connection");
-				break;
-			}
-			if(this->writeMode_){
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Not a read connection\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_ACCESS_VIOLATION, "Not a read connection");
-				break;
-			}
-
-			uint16_t blockNumber = PP_HTONS(((uint16_t*)buffer)[1]);
-			if (this->blockNumber_ != blockNumber) {
-				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-				printf("JbTftp Error: Wrong block number\n");
-				#endif
-				this->sendError(parameter, JBTFTP_ERROR_UNKNOWN_TRFR_ID, "Wrong block number");
-				break;
-			}
-			bool lastPacket = false;
-			if(!this->lastData_) {
-				lastPacket = (this->lastDataSize_ != (JB_TFTP_SERVER_MAX_PAYLOAD_SIZE +
-						JB_TFTP_SERVER_HEADER_LENGTH));
-			}
-			if (!lastPacket) {
-				this->blockNumber_++;
-				this->sendData();
-			} else {
-				this->close();
-			}
-		}
-		break;
-
-		default:
-		{
-			this->sendError(parameter, JBTFTP_ERROR_ILLEGAL_OPERATION, "Unknown operation");
-		}
-		break;
-	}
 }
 
 }
