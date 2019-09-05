@@ -38,6 +38,12 @@ namespace jbkernel
 class IVoidChannel
 {
 public:
+	typedef struct
+	{
+		void* parameters = NULL;
+		uint32_t parametersSize = 0;
+	}ConnectionParameter_t;
+
 	IVoidChannel(void){}
 	virtual ~IVoidChannel(void){}
 	virtual void initialize(void* (* const mallocFunc)(size_t),
