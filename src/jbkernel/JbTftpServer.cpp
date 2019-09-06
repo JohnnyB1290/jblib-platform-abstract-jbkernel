@@ -156,7 +156,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 				(memcmp(((IVoidChannel::ConnectionParameter_t*)this->channelParameter_)->parameters,
 						msg->connectionParam->parameters, msg->connectionParam->parametersSize))){
 			#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
-			printf("JbTftp: Only one connection at a time is supported\n");
+			printf("JbTftp: Only one connection at a time is supported, channel parameters not equal\n");
 			#endif
 			this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
 					"Only one connection at a time is supported");
