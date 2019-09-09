@@ -28,6 +28,7 @@
 #define JBKERNEL_IVOIDFILESYSTEM_HPP_
 
 #include "jbkernel/jb_common.h"
+#include <string>
 
 #if !defined FA_READ
 #define	FA_READ				0x01
@@ -59,10 +60,23 @@ namespace jbkernel
 class IVoidFileSystem
 {
 public:
+
+	#pragma pack(push, 1)
+	typedef struct
+	{
+		uint32_t totalSize = 0;
+		uint32_t freeSize = 0;
+	}VoidFileSystemInfo_t;
+	#pragma pack(pop)
+
 	virtual void* openFile(const char* fileName, uint8_t mode) = 0;
 	virtual void closeFile(void* file) = 0;
 	virtual int readFile(void* file, void* data, uint32_t size) = 0;
 	virtual int writeFile(void* file, void* data, uint32_t size) = 0;
+	virtual int format(void) = 0;
+	virtual int remove(const char* path) = 0;
+	virtual int getList(std::string& list, uint16_t* listSize, char* path) = 0;
+	virtual int getInfo(VoidFileSystemInfo_t* fsInfo) = 0;
 };
 
 }
