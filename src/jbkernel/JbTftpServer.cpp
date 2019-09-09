@@ -39,8 +39,16 @@
 #endif
 
 #define JB_TFTP_SERVER_HEADER_LENGTH    4
+
 #ifndef PP_HTONS
 #define PP_HTONS(x) ((uint16_t)((((x) & (uint16_t)0x00ffU) << 8) | (((x) & (uint16_t)0xff00U) >> 8)))
+#endif
+
+#ifndef PP_HTONL
+#define PP_HTONL(x) ((((x) & (uint32_t)0x000000ffUL) << 24) | \
+                     (((x) & (uint32_t)0x0000ff00UL) <<  8) | \
+                     (((x) & (uint32_t)0x00ff0000UL) >>  8) | \
+                     (((x) & (uint32_t)0xff000000UL) >> 24))
 #endif
 
 namespace jblib::jbkernel
@@ -48,11 +56,18 @@ namespace jblib::jbkernel
 
 enum JbTftpPacketType_t
 {
-	JBTFTP_PACKET_TYPE_RRQ		= 1,
-	JBTFTP_PACKET_TYPE_WRQ		= 2,
-	JBTFTP_PACKET_TYPE_DATA		= 3,
-	JBTFTP_PACKET_TYPE_ACK		= 4,
-	JBTFTP_PACKET_TYPE_ERROR	= 5,
+	JBTFTP_PACKET_TYPE_RRQ			= 1,
+	JBTFTP_PACKET_TYPE_WRQ			= 2,
+	JBTFTP_PACKET_TYPE_DATA			= 3,
+	JBTFTP_PACKET_TYPE_ACK			= 4,
+	JBTFTP_PACKET_TYPE_ERROR		= 5,
+	JBTFTP_PACKET_TYPE_RFRSH		= 0xFF00,
+	JBTFTP_PACKET_TYPE_FRMT			= 0xFF01,
+	JBTFTP_PACKET_TYPE_DEL			= 0xFF02,
+	JBTFTP_PACKET_TYPE_LIST_REQUEST	= 0xFF03,
+	JBTFTP_PACKET_TYPE_LIST_REPLY	= 0xFF04,
+	JBTFTP_PACKET_TYPE_INF			= 0xFF05,
+	JBTFTP_PACKET_TYPE_SPC			= 0xFF06,
 };
 
 
@@ -150,7 +165,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 				(VoidChannelMsgQueue::ChannelMessage_t*)parameter;
 		uint16_t size = msg->dataSize;
 		uint8_t* buffer = msg->data;
-		if(size < JB_TFTP_SERVER_HEADER_LENGTH)
+		if(size < 2)
 			return;
 		if((this->channelParameter_) &&
 				(memcmp(((IVoidChannel::ConnectionParameter_t*)this->channelParameter_)->parameters,
@@ -162,13 +177,13 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 					"Only one connection at a time is supported");
 			return;
 		}
-		uint16_t opcode = ((uint16_t*)buffer)[0];
+		uint16_t opcode = PP_HTONS(((uint16_t*)buffer)[0]);
 		this->lastPacketTime_ = this->timerCounter_;
 		this->retries_ = 0;
 
 		switch(opcode){
-			case PP_HTONS(JBTFTP_PACKET_TYPE_RRQ):
-			case PP_HTONS(JBTFTP_PACKET_TYPE_WRQ):
+			case JBTFTP_PACKET_TYPE_RRQ:
+			case JBTFTP_PACKET_TYPE_WRQ:
 			{
 				if(this->file_){
 					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
@@ -224,7 +239,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 					break;
 				}
 
-				uint8_t openMode = (opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ?
+				uint8_t openMode = (opcode == JBTFTP_PACKET_TYPE_WRQ) ?
 						(FA_CREATE_ALWAYS | FA_WRITE) : (FA_OPEN_EXISTING | FA_READ);
 				this->file_ = this->fileSystem_->openFile(fileName, openMode);
 				this->blockNumber_ = 1;
@@ -274,7 +289,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 				else
 					this->channelParameter_ = NULL;
 
-				if(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) {
+				if(opcode == JBTFTP_PACKET_TYPE_WRQ) {
 					this->writeMode_ = true;
 					this->sendAck(0);
 				}
@@ -285,7 +300,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 			}
 			break;
 
-			case PP_HTONS(JBTFTP_PACKET_TYPE_DATA):
+			case JBTFTP_PACKET_TYPE_DATA:
 			{
 				if(!this->file_){
 					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
@@ -341,7 +356,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 			}
 			break;
 
-			case PP_HTONS(JBTFTP_PACKET_TYPE_ACK):
+			case JBTFTP_PACKET_TYPE_ACK:
 			{
 				if(!this->file_){
 					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
@@ -380,8 +395,94 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 			}
 			break;
 
+			case JBTFTP_PACKET_TYPE_FRMT:
+			{
+				this->fileSystem_->format();
+				this->sendRefresh(msg->connectionParam);
+			}
+			break;
+
+			case JBTFTP_PACKET_TYPE_DEL:
+			{
+				char* fileName = (char*)&buffer[2];
+				char* res = (char*)memchr(fileName, 0, size - 2);
+				if(!res){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Filename not NULL terminated\n");
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Filename not NULL terminated");
+					break;
+				}
+				this->fileSystem_->remove(fileName);
+				this->sendRefresh(msg->connectionParam);
+			}
+			break;
+
+			case JBTFTP_PACKET_TYPE_LIST_REQUEST:
+			{
+				std::string list;
+				uint16_t listSize = 0;
+				list.append(sizeof(uint16_t), '\0');
+				list.append(sizeof(uint16_t), '\0');
+				int result = this->fileSystem_->getList(list, &listSize, (char*)"");
+				if(result){
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Get list error %i\n", result);
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Get list error");
+				}
+				else{
+					uint16_t replyOpcode = JBTFTP_PACKET_TYPE_LIST_REPLY;
+					list[0] = (replyOpcode >> 8) & 0xff;
+					list[1] = replyOpcode & 0xff;
+					list[2] = (listSize >> 8) & 0xff;
+					list[3] = listSize & 0xff;
+					this->channel_->tx((uint8_t*)list.c_str(),
+							list.size(), msg->connectionParam);
+				}
+			}
+			break;
+
+			case JBTFTP_PACKET_TYPE_INF:
+			{
+				IVoidFileSystem::VoidFileSystemInfo_t info;
+				int result = this->fileSystem_->getInfo(&info);
+				if(!result){
+					uint32_t replySize = 2 + sizeof(IVoidFileSystem::VoidFileSystemInfo_t);
+					uint8_t* reply = (uint8_t*)malloc_s(replySize);
+					if(reply){
+						((uint16_t*)reply)[0] = PP_HTONS(JBTFTP_PACKET_TYPE_SPC);
+						info.totalSize = PP_HTONL(info.totalSize);
+						info.freeSize = PP_HTONL(info.freeSize);
+						memcpy(&reply[2], (void*)&info, sizeof(IVoidFileSystem::VoidFileSystemInfo_t));
+						this->channel_->tx(reply, replySize, msg->connectionParam);
+						free_s(reply);
+					}
+					else{
+						#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+						printf("JbTftp Error: Get info error no mem\n");
+						#endif
+						this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+								"Get info error, no mem");
+					}
+				}
+				else{
+					#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+					printf("JbTftp Error: Get info error %i\n", result);
+					#endif
+					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
+							"Get info error");
+				}
+			}
+			break;
+
 			default:
 			{
+				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
+				printf("JbTftp Error: Unknown operation %u\n", opcode);
+				#endif
 				this->sendError(msg->connectionParam, JBTFTP_ERROR_ILLEGAL_OPERATION,
 						"Unknown operation");
 			}
@@ -415,6 +516,14 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 			}
 		}
 	}
+}
+
+
+
+void JbTftpServer::sendRefresh(void* channelParams)
+{
+	uint16_t refresh = PP_HTONS(JBTFTP_PACKET_TYPE_RFRSH);
+	this->channel_->tx((uint8_t*)&refresh, sizeof(refresh), channelParams);
 }
 
 

@@ -70,6 +70,7 @@ private:
 	void sendData(void);
 	void sendError(void* channelParameter, JbTftpErrorCode_t code,
 			const char* description);
+	void sendRefresh(void* channelParams);
 
 	bool isInitialized_ = false;
 	uint8_t nrtTimerNum_ = 0;
