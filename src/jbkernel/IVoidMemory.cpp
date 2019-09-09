@@ -65,6 +65,13 @@ uint32_t IVoidMemory::getBaseAddess(void)
 
 
 
+bool IVoidMemory::isCacheEnabled(void)
+{
+	return this->isCacheEnabled_;
+}
+
+
+
 void IVoidMemory::enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells)
 {
 	if(!this->isCacheEnabled_){

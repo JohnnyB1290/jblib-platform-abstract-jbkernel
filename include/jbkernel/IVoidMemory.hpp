@@ -56,6 +56,7 @@ public:
 	void disableCache(void);
 	void flushCache(void);
 	uint32_t getBaseAddess(void);
+	bool isCacheEnabled(void);
 	virtual void initialize(void) = 0;
 
 	#if USE_FAT_FS
