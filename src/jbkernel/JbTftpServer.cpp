@@ -68,6 +68,7 @@ enum JbTftpPacketType_t
 	JBTFTP_PACKET_TYPE_LIST_REPLY	= 0xFF04,
 	JBTFTP_PACKET_TYPE_INF			= 0xFF05,
 	JBTFTP_PACKET_TYPE_SPC			= 0xFF06,
+	JBTFTP_PACKET_TYPE_KEEP_ON		= 0xFF07,
 };
 
 
@@ -475,6 +476,13 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 					this->sendError(msg->connectionParam, JBTFTP_ERROR_ACCESS_VIOLATION,
 							"Get info error");
 				}
+			}
+			break;
+
+			case JBTFTP_PACKET_TYPE_KEEP_ON:
+			{
+				uint16_t keepOn = PP_HTONS(JBTFTP_PACKET_TYPE_KEEP_ON);
+				this->channel_->tx((uint8_t*)&keepOn, sizeof(keepOn), msg->connectionParam);
 			}
 			break;
 
