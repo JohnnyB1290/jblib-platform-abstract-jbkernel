@@ -254,7 +254,7 @@ void JbTftpServer::voidCallback(void* const source, void* parameter)
 
 				#if USE_CONSOLE && JB_TFTP_SERVER_USE_CONSOLE
 				printf("JbTftp: %s request for '%s' mode '%s'\n",
-						(opcode == PP_HTONS(JBTFTP_PACKET_TYPE_WRQ)) ? "write" : "read",
+						(opcode == JBTFTP_PACKET_TYPE_WRQ) ? "write" : "read",
 								fileName, mode);
 				#endif
 
