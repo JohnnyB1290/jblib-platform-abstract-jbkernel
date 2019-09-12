@@ -265,7 +265,53 @@ int IVoidMemory::isAddressInCache(uint32_t address)
 
 
 
+void IVoidMemory::invalidateCacheCell(int cellNumber)
+{
+	if(this->isCacheEnabled_){
+		disableInterrupts();
+		this->readMemory(this->cache_[cellNumber].address,
+				this->cache_[cellNumber].cache, this->cacheCellSize_);
+		this->cache_[cellNumber].useCounter = 0;
+		enableInterrupts();
+	}
+}
+
+
+
+void IVoidMemory::invalidateCache(void)
+{
+	if(this->isCacheEnabled_){
+		for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
+			this->invalidateCacheCell(i);
+		}
+	}
+}
+
+
+
+void IVoidMemory::erase(uint32_t address, uint32_t size)
+{
+	this->eraseMemory(address, size);
+	this->invalidateCache();
+}
+
+
+
 #if USE_FAT_FS
+
+uint32_t IVoidMemory::getDiskBaseAddress(void) const
+{
+	return this->diskBaseAddress_;
+}
+
+
+
+uint32_t IVoidMemory::getDiskSize(void) const
+{
+	return this->diskSize_;
+}
+
+
 
 DSTATUS IVoidMemory::diskStatus(void)
 {

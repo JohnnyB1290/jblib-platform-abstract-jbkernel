@@ -52,14 +52,18 @@ public:
 	virtual ~IVoidMemory(void);
 	void read(uint32_t address, uint8_t* data, uint32_t size);
 	void write(uint32_t address, uint8_t* data, uint32_t size);
+	void erase(uint32_t address, uint32_t size);
 	void enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells);
 	void disableCache(void);
 	void flushCache(void);
+	void invalidateCache(void);
 	uint32_t getBaseAddess(void);
 	bool isCacheEnabled(void);
 	virtual void initialize(void) = 0;
 
 	#if USE_FAT_FS
+	uint32_t getDiskBaseAddress(void) const;
+	uint32_t getDiskSize(void) const;
 	virtual DSTATUS diskInitialize(void);
 	virtual DSTATUS diskStatus(void);
 	virtual DRESULT diskRead(BYTE* buff, DWORD sector, UINT count);
@@ -70,6 +74,7 @@ public:
 protected:
 	virtual void readMemory(uint32_t address, uint8_t* data, uint32_t size) = 0;
 	virtual void writeMemory(uint32_t address, uint8_t* data, uint32_t size) = 0;
+	virtual void eraseMemory(uint32_t address, uint32_t size) = 0;
 
 	uint32_t baseAddress_ = 0;
 	bool isInitialized_ = false;
@@ -85,6 +90,7 @@ private:
 	int isAddressInCache(uint32_t address);
 	int findCacheCell(void);
 	void flushCacheCell(int cellNumber);
+	void invalidateCacheCell(int cellNumber);
 
 	typedef struct
 	{
