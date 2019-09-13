@@ -40,12 +40,12 @@ using namespace jbfatfs;
 
 
 #if USE_FAT_FS
-IVoidMemory::IVoidMemory(uint32_t baseAddress) : IStorageDevice()
+IVoidMemory::IVoidMemory(void) : IStorageDevice()
 #else
-IVoidMemory::IVoidMemory(uint32_t baseAddress)
+IVoidMemory::IVoidMemory(void)
 #endif
 {
-	this->baseAddress_ = baseAddress;
+
 }
 
 
@@ -309,6 +309,20 @@ uint32_t IVoidMemory::getDiskBaseAddress(void) const
 uint32_t IVoidMemory::getDiskSize(void) const
 {
 	return this->diskSize_;
+}
+
+
+
+void IVoidMemory::setDiskBaseAddress(uint32_t diskBaseAddress)
+{
+	this->diskBaseAddress_ = diskBaseAddress;
+}
+
+
+
+void IVoidMemory::setDiskSize(uint32_t diskSize)
+{
+	this->diskSize_ = diskSize;
 }
 
 

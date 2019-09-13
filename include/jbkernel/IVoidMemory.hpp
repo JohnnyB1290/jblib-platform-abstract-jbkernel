@@ -48,7 +48,7 @@ class IVoidMemory
 #endif
 {
 public:
-	IVoidMemory(uint32_t baseAddress);
+	IVoidMemory(void);
 	virtual ~IVoidMemory(void);
 	void read(uint32_t address, uint8_t* data, uint32_t size);
 	void write(uint32_t address, uint8_t* data, uint32_t size);
@@ -64,6 +64,8 @@ public:
 	#if USE_FAT_FS
 	uint32_t getDiskBaseAddress(void) const;
 	uint32_t getDiskSize(void) const;
+	void setDiskBaseAddress(uint32_t diskBaseAddress);
+	void setDiskSize(uint32_t diskSize);
 	virtual DSTATUS diskInitialize(void);
 	virtual DSTATUS diskStatus(void);
 	virtual DRESULT diskRead(BYTE* buff, DWORD sector, UINT count);
