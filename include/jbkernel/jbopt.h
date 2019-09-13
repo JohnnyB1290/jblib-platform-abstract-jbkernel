@@ -467,4 +467,18 @@
 #endif
 
 
+/*
+   ------------------------------------
+   ---- File to memory manager --------
+   ------------------------------------
+*/
+
+/**
+ * FILE_TO_MEMORY_USE_CONSOLE
+ */
+#if !defined FILE_TO_MEMORY_USE_CONSOLE
+#define FILE_TO_MEMORY_USE_CONSOLE					0
+#endif
+
+
 #endif /*  JBOPT_H_ */
