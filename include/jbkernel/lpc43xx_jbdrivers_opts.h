@@ -1675,5 +1675,39 @@ typedef struct{
 #define MSC_DEVICE_ROM_OUT_EP_USB_0				0x05
 #endif
 
+/*
+   ------------------------------------
+   ----------- Internal flash ---------
+   ------------------------------------
+*/
+
+/**
+ * INTERNAL_FLASH_USE_CONSOLE
+ */
+#if !defined INTERNAL_FLASH_USE_CONSOLE
+#define INTERNAL_FLASH_USE_CONSOLE				0
+#endif
+
+/**
+ * FLASH_A_BASE
+ */
+#if !defined FLASH_A_BASE
+#define FLASH_A_BASE 							0x1A000000
+#endif
+
+/**
+ * FLASH_B_BASE
+ */
+#if !defined FLASH_B_BASE
+#define FLASH_B_BASE 							0x1B000000
+#endif
+
+/**
+ * FLASH_PAGE_SIZE
+ */
+#if !defined FLASH_PAGE_SIZE
+#define FLASH_PAGE_SIZE 						(512UL)
+#endif
+
 
 #endif /* LPC43XX_JBDRIVERS_OPTS_H_ */
