@@ -187,13 +187,6 @@
 #endif
 
 /**
- * IPC_NUM_LISTENERS
- */
-#if !defined IPC_NUM_LISTENERS
-#define IPC_NUM_LISTENERS						16
-#endif
-
-/**
  * IPC_NUM_GLOBAL_VALUES
  */
 #if !defined IPC_NUM_GLOBAL_VALUES
