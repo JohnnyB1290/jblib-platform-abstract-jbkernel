@@ -128,6 +128,7 @@ void EventTimer::start(void)
 	if(this->voidTimer_ == (IVoidTimer*) NULL)
 		return;
 	disableInterrupts();
+	this->voidTimer_->reset();
 	this->voidTimer_->start();
 	this->isStopped_ = false;
 	enableInterrupts();
@@ -140,8 +141,8 @@ void EventTimer::stop(void)
 	if(this->voidTimer_ == (IVoidTimer*) NULL)
 		return;
 	disableInterrupts();
-	this->voidTimer_->reset();
 	this->voidTimer_->stop();
+	this->voidTimer_->reset();
 	this->isStopped_ = true;
 	enableInterrupts();
 }
