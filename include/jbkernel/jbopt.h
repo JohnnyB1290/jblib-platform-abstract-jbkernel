@@ -462,6 +462,19 @@
 
 /*
    ------------------------------------
+   ---------- Web Server --------------
+   ------------------------------------
+*/
+
+/**
+ * USE_WEB_SERVER
+ */
+#if !defined USE_WEB_SERVER
+#define USE_WEB_SERVER								1
+#endif
+
+/*
+   ------------------------------------
    ---- File to memory manager --------
    ------------------------------------
 */
@@ -473,5 +486,52 @@
 #define FILE_TO_MEMORY_USE_CONSOLE					0
 #endif
 
+/*
+   ------------------------------------
+   -------- Zinger Server -------------
+   ------------------------------------
+*/
+
+/**
+ * ZINGER_SERVER_RX_BUFFER_SIZE
+ */
+#if !defined ZINGER_SERVER_RX_BUFFER_SIZE
+#define ZINGER_SERVER_RX_BUFFER_SIZE				(2048)
+#endif
+
+/**
+ * ZINGER_SERVER_TIMER_PERIOD_MS
+ */
+#if !defined ZINGER_SERVER_TIMER_PERIOD_MS
+#define ZINGER_SERVER_TIMER_PERIOD_MS				1
+#endif
+
+/**
+ * ZINGER_SERVER_TIMEOUT_INI_PACKET
+ */
+#if !defined ZINGER_SERVER_TIMEOUT_INI_PACKET
+#define ZINGER_SERVER_TIMEOUT_INI_PACKET			(100 / ZINGER_SERVER_TIMER_PERIOD_MS)
+#endif
+
+/**
+ * ZINGER_SERVER_TIMEOUT_BASE
+ */
+#if !defined ZINGER_SERVER_TIMEOUT_BASE
+#define ZINGER_SERVER_TIMEOUT_BASE					(50 / ZINGER_SERVER_TIMER_PERIOD_MS)
+#endif
+
+/**
+ * ZINGER_SERVER_TIMEOUT_FOR_1_STRING
+ */
+#if !defined ZINGER_SERVER_TIMEOUT_FOR_1_STRING
+#define ZINGER_SERVER_TIMEOUT_FOR_1_STRING			(32 * 8 / 64 / ZINGER_SERVER_TIMER_PERIOD_MS) // 32byte * 8 bit/byte / 64 kbit/s
+#endif
+
+/**
+ * ZINGER_SERVER_STATUS_QUEUE_MAX_SIZE
+ */
+#if !defined ZINGER_SERVER_STATUS_QUEUE_MAX_SIZE
+#define ZINGER_SERVER_STATUS_QUEUE_MAX_SIZE			8
+#endif
 
 #endif /*  JBOPT_H_ */

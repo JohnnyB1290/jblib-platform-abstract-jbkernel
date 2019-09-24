@@ -60,6 +60,7 @@ public:
 	uint32_t getBaseAddess(void);
 	bool isCacheEnabled(void);
 	virtual void initialize(void) = 0;
+	virtual bool isEmpty(uint32_t address, uint32_t size) = 0;
 
 	#if USE_FAT_FS
 	uint32_t getDiskBaseAddress(void) const;

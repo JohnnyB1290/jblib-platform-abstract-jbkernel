@@ -291,8 +291,10 @@ void IVoidMemory::invalidateCache(void)
 
 void IVoidMemory::erase(uint32_t address, uint32_t size)
 {
+	disableInterrupts();
 	this->eraseMemory(address, size);
 	this->invalidateCache();
+	enableInterrupts();
 }
 
 
