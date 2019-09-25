@@ -516,6 +516,15 @@ void ZingerServer::sendCommand(uint16_t stringNumber, uint8_t count)
 	command[2] = stringNumber>>8;
 	command[3] = count;
 	this->startParameters_.channel->tx(command, 5, NULL);
+	#if ZINGER_SERVER_USE_TX_STATUS_MSG
+	if(this->statusQueue_.size() <= ZINGER_SERVER_STATUS_QUEUE_MAX_SIZE){
+		StatusMsg_t msg = {
+				.type = ZINGER_SERVER_STATUS_TX,
+				.data = 0
+		};
+		this->statusQueue_.push(msg);
+	}
+	#endif
 }
 
 

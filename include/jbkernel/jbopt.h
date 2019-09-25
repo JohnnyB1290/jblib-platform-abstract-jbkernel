@@ -534,4 +534,12 @@
 #define ZINGER_SERVER_STATUS_QUEUE_MAX_SIZE			8
 #endif
 
+/**
+ * ZINGER_SERVER_USE_TX_STATUS_MSG
+ */
+#if !defined ZINGER_SERVER_USE_TX_STATUS_MSG
+#define ZINGER_SERVER_USE_TX_STATUS_MSG				0
+#endif
+
+
 #endif /*  JBOPT_H_ */
