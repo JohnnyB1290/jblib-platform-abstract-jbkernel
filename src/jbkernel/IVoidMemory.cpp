@@ -52,8 +52,7 @@ IVoidMemory::IVoidMemory(void)
 
 IVoidMemory::~IVoidMemory(void)
 {
-	if(this->isCacheEnabled_)
-		this->disableCache();
+
 }
 
 
