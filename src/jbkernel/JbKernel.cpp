@@ -36,6 +36,7 @@ namespace jbkernel
 {
 
 std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresList_;
+std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresDeleteList_;
 
 
 
@@ -64,6 +65,14 @@ void JbKernel::doMain(void)
 		it->procedure->voidCallback(NULL,
 				it->parameter);
 	}
+	if(!mainProceduresDeleteList_.empty()){
+		for(std::forward_list<JbKernel::ProceduresListItem>::iterator
+				it = mainProceduresDeleteList_.begin();
+				it != mainProceduresDeleteList_.end(); ++it){
+			deleteMainProcedure(*it);
+		}
+		mainProceduresDeleteList_.clear();
+	}
 }
 
 
@@ -78,11 +87,11 @@ void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter)
 
 
 
-void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
+void JbKernel::deleteMainProcedure(ProceduresListItem& procedureItem)
 {
-	mainProceduresList_.remove_if([callback, parameter](ProceduresListItem item){
-		if((item.procedure == callback) &&
-				item.parameter == parameter)
+	mainProceduresList_.remove_if([procedureItem](ProceduresListItem item){
+		if((item.procedure == procedureItem.procedure) &&
+				item.parameter == procedureItem.parameter)
 			return true;
 		else
 			return false;
@@ -91,9 +100,12 @@ void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback)
+void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
 {
-	addMainProcedure(callback, NULL);
+	ProceduresListItem newItem;
+	newItem.procedure = callback;
+	newItem.parameter = parameter;
+	mainProceduresDeleteList_.push_front(newItem);
 }
 
 
@@ -101,6 +113,13 @@ void JbKernel::addMainProcedure(IVoidCallback* callback)
 void JbKernel::deleteMainProcedure(IVoidCallback* callback)
 {
 	deleteMainProcedure(callback, NULL);
+}
+
+
+
+void JbKernel::addMainProcedure(IVoidCallback* callback)
+{
+	addMainProcedure(callback, NULL);
 }
 
 

@@ -69,8 +69,10 @@ private:
 		void* parameter = NULL;
 	}ProceduresListItem;
 	static std::forward_list<ProceduresListItem> mainProceduresList_;
+	static std::forward_list<ProceduresListItem> mainProceduresDeleteList_;
 
 	static uint32_t getHeapFreeRecursiveAux(bool resetCounter, uint32_t step);
+	static void deleteMainProcedure(ProceduresListItem& procedureItem);
 };
 
 }
