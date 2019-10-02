@@ -147,14 +147,20 @@ void EventTimer::stop(void)
 	enableInterrupts();
 }
 
+void EventTimer::nativeRestart(void) {
+	disableInterrupts();
+	this->voidTimer_->stop();
+	this->voidTimer_->reset();
+	this->voidTimer_->start();
+	this->isStopped_ = false;
+	enableInterrupts();
+}
 
 
 void EventTimer::addCyclicEvent(uint32_t periodUs, IVoidCallback* const callback, void* data)
 {
 
 }
-
-
 
 void EventTimer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data)
 {

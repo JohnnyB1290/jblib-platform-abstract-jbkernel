@@ -72,9 +72,17 @@ void KernelPerformer::voidCallback(void* const source, void* parameter)
 void KernelPerformer::addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data)
 {
 	disableInterrupts();
-	uint32_t tempBw = this->eventBw_++;
-	this->eventBw_ =
-			( this->eventBw_ == EVENT_TIMER_EVENTS_SIZE ) ? 0 : this->eventBw_;
+	uint32_t tempBw = this->eventBw_;
+	uint32_t tempBr = this->eventBr_;
+	tempBw++;
+	tempBw = ( tempBw == EVENT_TIMER_EVENTS_SIZE ) ? 0 : tempBw;
+	if(tempBr == tempBw) {
+		//override protection, one slot must be always!
+		enableInterrupts();
+		return;
+	}
+	tempBw = this->eventBw_++;
+	this->eventBw_ = ( this->eventBw_ == EVENT_TIMER_EVENTS_SIZE ) ? 0 : this->eventBw_;
 	this->eventsData_[tempBw] = data;
 	this->callbacks_[tempBw] = callback;
 	this->isEventsReady_[tempBw] = true;

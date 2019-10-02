@@ -43,6 +43,7 @@ public:
 	void deinitialize(void);
 	void start(void);
 	void stop(void);
+	void nativeRestart(void);
 	virtual void addCyclicEvent(uint32_t periodUs, IVoidCallback* const callback, void* data);
 	virtual void addOneTimeEvent(uint32_t delayUs, IVoidCallback* const callback, void* data);
 	virtual void deleteEvent(IVoidCallback* const callback, void* const data);
