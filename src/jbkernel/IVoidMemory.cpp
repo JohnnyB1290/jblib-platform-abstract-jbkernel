@@ -84,9 +84,10 @@ void IVoidMemory::enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells)
 			return;
 		}
 		for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
-			this->cache_[i].address = this->baseAddress_;
+			this->cache_[i].address = 0;
 			this->cache_[i].useCounter = 0;
 			this->cache_[i].cache = (uint8_t*)malloc_s(cacheCellSize);
+			this->cache_[i].isUsing = false;
 			if(!this->cache_[i].cache){
 				if(!i){
 					#if USE_CONSOLE
@@ -103,9 +104,6 @@ void IVoidMemory::enableCache(uint32_t cacheCellSize, uint8_t cacheSizeCells)
 					break;
 				}
 			}
-			disableInterrupts();
-			this->readMemory(this->cache_[i].address, this->cache_[i].cache, this->cacheCellSize_);
-			enableInterrupts();
 		}
 		this->isCacheEnabled_ = true;
 	}
@@ -171,6 +169,7 @@ void IVoidMemory::write(uint32_t address, uint8_t* data, uint32_t size)
 						&this->cache_[cell].cache[size], this->cacheCellSize_ - size);
 				memcpy(this->cache_[cell].cache, data, size);
 				this->cache_[cell].useCounter++;
+				this->cache_[cell].isUsing = true;
 				enableInterrupts();
 				return;
 			}
@@ -240,7 +239,7 @@ int IVoidMemory::isRangeInCache(uint32_t address, uint32_t size)
 {
 	int ret = -1;
 	for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
-		if((address >= this->cache_[i].address) &&
+		if(this->cache_[i].isUsing && (address >= this->cache_[i].address) &&
 				(address + size) <= (this->cache_[i].address + this->cacheCellSize_)){
 			ret = i;
 		}
@@ -254,7 +253,7 @@ int IVoidMemory::isAddressInCache(uint32_t address)
 {
 	int ret = -1;
 	for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
-		if((address >= this->cache_[i].address) &&
+		if(this->cache_[i].isUsing && (address >= this->cache_[i].address) &&
 				address <= (this->cache_[i].address + this->cacheCellSize_)){
 			ret = i;
 		}
@@ -281,7 +280,9 @@ void IVoidMemory::invalidateCache(void)
 {
 	if(this->isCacheEnabled_){
 		for(uint32_t i = 0; i < this->cacheSizeCells_; i++){
-			this->invalidateCacheCell(i);
+			if(this->cache_[i].isUsing) {
+				this->invalidateCacheCell(i);
+			}
 		}
 	}
 }

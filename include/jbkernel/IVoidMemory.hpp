@@ -100,6 +100,7 @@ private:
 		uint32_t address = 0;
 		uint8_t* cache = NULL;
 		uint16_t useCounter = 0;
+		bool isUsing = false;
 	}CacheCell_t;
 	uint32_t cacheCellSize_ = 0;
 	uint8_t cacheSizeCells_ = 0;
