@@ -601,7 +601,7 @@ typedef struct{
 #endif
 
 /**
- * SSP_0_FRAMEFORMAT
+ * SSP_0_CLOCKMODE
  */
 #if !defined SSP_0_CLOCKMODE
 #define SSP_0_CLOCKMODE					SSP_CLOCK_CPHA0_CPOL0
@@ -674,14 +674,14 @@ typedef struct{
 #endif
 
 /**
- * SSP_0_FRAMEFORMAT
+ * SSP_1_FRAMEFORMAT
  */
 #if !defined SSP_1_FRAMEFORMAT
 #define SSP_1_FRAMEFORMAT				SSP_FRAMEFORMAT_SPI
 #endif
 
 /**
- * SSP_0_FRAMEFORMAT
+ * SSP_1_CLOCKMODE
  */
 #if !defined SSP_1_CLOCKMODE
 #define SSP_1_CLOCKMODE					SSP_CLOCK_CPHA0_CPOL0
@@ -1713,6 +1713,72 @@ typedef struct{
  */
 #if !defined FLASH_PAGE_SIZE
 #define FLASH_PAGE_SIZE 						(512UL)
+#endif
+
+/*
+   ------------------------------------
+   --------------- SPI ----------------
+   ------------------------------------
+*/
+
+/**
+ * SPI_CLK
+ */
+#if !defined SPI_CLK_PORT
+#define SPI_CLK_PORT					0
+#endif
+#if !defined SPI_CLK_PIN
+#define SPI_CLK_PIN						0
+#endif
+#if !defined SPI_CLK_SCU_MODE
+#define SPI_CLK_SCU_MODE				SCU_MODE_FUNC0
+#endif
+
+/**
+ * SPI_MOSI
+ */
+#if !defined SPI_MOSI_PORT
+#define SPI_MOSI_PORT					0
+#endif
+#if !defined SPI_MOSI_PIN
+#define SPI_MOSI_PIN					0
+#endif
+#if !defined SPI_MOSI_SCU_MODE
+#define SPI_MOSI_SCU_MODE				SCU_MODE_FUNC0
+#endif
+
+/**
+ * SPI_MISO
+ */
+#if !defined SPI_MISO_PORT
+#define SPI_MISO_PORT					0
+#endif
+#if !defined SPI_MISO_PIN
+#define SPI_MISO_PIN					0
+#endif
+#if !defined SPI_MISO_SCU_MODE
+#define SPI_MISO_SCU_MODE				SCU_MODE_FUNC0
+#endif
+
+/**
+ * SPI_BITS_PER_FRAME
+ */
+#if !defined SPI_BITS_PER_FRAME
+#define SPI_BITS_PER_FRAME				SPI_BITS_8
+#endif
+
+/**
+ * SPI_CLOCKMODE
+ */
+#if !defined SPI_CLOCKMODE
+#define SPI_CLOCKMODE					SPI_CLOCK_CPHA0_CPOL0
+#endif
+
+/**
+ * SPI_BIT_ORDER
+ */
+#if !defined SPI_BIT_ORDER
+#define SPI_BIT_ORDER					SPI_DATA_MSB_FIRST
 #endif
 
 
