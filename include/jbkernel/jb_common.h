@@ -111,7 +111,7 @@ static __inline void free_s(void * ptr)
 					 (((n) >> 3 ) & 0x02)   | \
 					 ((n) & 0x01))
 
-#define BIN(n) LongToBin(0x##n##l)
+#define BIN(n) LONG_TO_BIN(0x##n##l)
 
 #if !defined(MAX)
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
