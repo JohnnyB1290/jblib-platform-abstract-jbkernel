@@ -590,7 +590,7 @@ bool ZingerServer::checkImageHeader(uint32_t imageAddress)
 	return (validUserCode == 0) ? true : false;
 }
 #else
-bool ZingerServer::isImageHeaderValid(uint32_t imageAddress)
+bool ZingerServer::checkImageHeader(uint32_t imageAddress)
 {
 	return true;
 }
