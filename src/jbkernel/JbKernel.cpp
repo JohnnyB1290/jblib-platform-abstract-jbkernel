@@ -40,7 +40,7 @@ std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresDeleteLi
 
 
 
-void JbKernel::delayMs(uint32_t ms)  //For 204MHz Clock
+void JbKernel::delayMs(uint32_t ms)
 {
 	for(uint32_t i = 0; i < ms; i++)
 		for(uint32_t j = 0; j < JBKERNEL_NUM_NOP_DELAY_MS; j++)
@@ -49,7 +49,7 @@ void JbKernel::delayMs(uint32_t ms)  //For 204MHz Clock
 
 
 
-void JbKernel::delayUs(uint32_t us) //For 204MHz Clock
+void JbKernel::delayUs(uint32_t us)
 {
 	for(uint32_t i = 0; i < us * JBKERNEL_NUM_NOP_DELAY_US; i++)
 		asm volatile ("nop");

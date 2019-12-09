@@ -139,13 +139,6 @@
 #endif
 
 /**
- * JBCONTROLLER_NUM_MAIN_PROCEDURES
- */
-#if !defined JBCONTROLLER_NUM_MAIN_PROCEDURES
-#define JBCONTROLLER_NUM_MAIN_PROCEDURES				16
-#endif
-
-/**
  * JBCONTROLLER_BOARD_GPIOS
  */
 #if !defined JBCONTROLLER_BOARD_GPIOS
@@ -312,13 +305,6 @@
    ----------- IRQ Controller ---------
    ------------------------------------
 */
-
-/**
- * IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
- */
-#if !defined IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS
-#define IRQ_CONTROLLER_NUM_PERIPHERAL_LISTENERS			32
-#endif
 
 /**
  * IRQ_CONTROLLER_DEVICE_ID
