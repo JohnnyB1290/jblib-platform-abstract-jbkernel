@@ -69,8 +69,7 @@ void ZingerServer::start(void)
 		return;
 	this->stop();
 	if((!this->startParameters_.channel) ||
-			(!this->startParameters_.waitingTimeoutMs) ||
-					(this->startParameters_.memoryBlocks.empty())){
+				(this->startParameters_.memoryBlocks.empty())){
 		return;
 	}
 	uint8_t* rxBuffer =
