@@ -51,7 +51,9 @@
                      (((x) & (uint32_t)0xff000000UL) >> 24))
 #endif
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 enum JbTftpPacketType_t
@@ -603,4 +605,5 @@ void JbTftpServer::sendError(void* channelParameter, JbTftpErrorCode_t code,
 	free_s(data);
 }
 
+}
 }

@@ -41,6 +41,7 @@ namespace jblib
 namespace jbkernel
 {
 
+#if !JB_LIB_OS
 class JbKernel
 {
 public:
@@ -74,9 +75,38 @@ private:
 	static uint32_t getHeapFreeRecursiveAux(bool resetCounter, uint32_t step);
 	static void deleteMainProcedure(ProceduresListItem& procedureItem);
 };
+#else
+class JbKernel
+{
+public:
+    static void delayMs(uint32_t ms);
+    static void delayUs(uint32_t us);
+    static void addMainProcedure(IVoidCallback* callback);
+    static void addMainProcedure(IVoidCallback* callback, void* parameter);
+    static void addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize);
+    static void deleteMainProcedure(IVoidCallback* callback);
+    static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
+    static uint32_t getHeapFree(void);
+    static uint32_t getHeapFree(uint32_t step);
+#if USE_CONSOLE
+    static Console* getConsole(void)
+    {
+        return Console::getConsole();
+    }
+#endif
 
+private:
+    typedef struct
+    {
+        IVoidCallback* procedure = NULL;
+        void* parameter = NULL;
+    }ProceduresListItem;
+    static std::forward_list<ProceduresListItem> mainProceduresDeleteList_;
+
+    static void mainTaskHandler(void* listItem);
+};
+#endif
 }
-
 }
 
 #endif /* JBKERNEL_JBKERNEL_HPP_ */

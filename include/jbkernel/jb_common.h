@@ -59,7 +59,16 @@ typedef uint8_t EthernetFrame[XEMACPS_MAX_VLAN_FRAME_SIZE] __attribute__ ((align
 #include "fsl_device_registers.h"
 #define EMAC_ETH_MAX_FLEN 		1536
 typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
+
+#elif JB_LIB_PLATFORM == 3  //ESP32
+#include "sdkconfig.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "freertos/semphr.h"
 #endif
+
+#if JB_LIB_OS == 0
 
 #if USE_NESTED_CRITICAL_SECTIONS == 1
 
@@ -71,13 +80,30 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #else
 #define disableInterrupts()		 __disable_irq()
 #define enableInterrupts()  	 __enable_irq()
+
+#endif
+#else
+
+#if JB_LIB_PLATFORM == 3
+#define disableInterrupts()      portENTER_CRITICAL_SAFE(&criticalMux)
+#define enableInterrupts()  	 portEXIT_CRITICAL_SAFE(&criticalMux)
+
+#else
+#define disableInterrupts()		 taskENTER_CRITICAL()
+#define enableInterrupts()  	 taskEXIT_CRITICAL()
 #endif
 
+#endif
+
+#if !JB_LIB_OS
 #if USE_THREAD_SAFE_MALLOC == 1
 
 static __inline void* malloc_s(size_t size)
 {
-	void* ret_ptr = NULL;
+#if JB_LIB_PLATFORM == 3
+    static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+#endif
+    void* ret_ptr = NULL;
 	disableInterrupts();
 	ret_ptr = malloc(size);
 	enableInterrupts();
@@ -86,6 +112,9 @@ static __inline void* malloc_s(size_t size)
 
 static __inline void free_s(void * ptr)
 {
+    #if JB_LIB_PLATFORM == 3
+    static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+    #endif
 	disableInterrupts();
 	free(ptr);
 	enableInterrupts();
@@ -94,6 +123,10 @@ static __inline void free_s(void * ptr)
 #else
 #define malloc_s malloc
 #define free_s free
+#endif
+#else
+#define malloc_s pvPortMalloc
+#define free_s vPortFree
 #endif
 
 #define IS_POWER_OF_TWO(x) ((x) && !((x) & ((x)-1)))

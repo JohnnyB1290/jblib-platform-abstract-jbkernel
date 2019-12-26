@@ -34,6 +34,7 @@
  * JB_LIB_PLATFORM == 0 LPC43XX
  * JB_LIB_PLATFORM == 1 ZYNQ
  * JB_LIB_PLATFORM == 2 i.MXRT
+ * JB_LIB_PLATFORM == 3 ESP32
  */
 #if !defined JB_LIB_PLATFORM
 #error "JB_Lib: Please define platform!"
@@ -44,7 +45,19 @@
 #elif JB_LIB_PLATFORM == 1
 #include "jbkernel/zynq_jbdrivers_opts.h"
 #elif JB_LIB_PLATFORM == 2
-#include "jbkernel/imxrt_jbdrivers_opt.h"
+#include "jbkernel/imxrt_jbdrivers_opts.h"
+#elif JB_LIB_PLATFORM == 3
+#define JB_LIB_OS 1
+#include "jbkernel/esp32_jbdrivers_opts.h"
+#endif
+
+/**
+ * JB_LIB_OS
+ * JB_LIB_OS == 0 NO OS
+ * JB_LIB_OS == 1 Free RTOS
+ */
+#if !defined JB_LIB_OS
+#define JB_LIB_OS 0
 #endif
 
 /**
@@ -69,6 +82,31 @@
 #if !defined USE_NESTED_CRITICAL_SECTIONS
 #define USE_NESTED_CRITICAL_SECTIONS			0
 #endif
+
+/*
+   ------------------------------------
+   ------------- JBKERNEL -------------
+   ------------------------------------
+*/
+
+#if JB_LIB_OS == 1
+
+/**
+ * JBKERNEL_MAIN_TASKS_PRIORITY
+ */
+#if !defined JBKERNEL_MAIN_TASKS_PRIORITY
+#define JBKERNEL_MAIN_TASKS_PRIORITY			(tskIDLE_PRIORITY + 1)
+#endif
+
+/**
+ * JBKERNEL_MAIN_TASKS_STACK_SIZE
+ */
+#if !defined JBKERNEL_MAIN_TASKS_STACK_SIZE
+#define JBKERNEL_MAIN_TASKS_STACK_SIZE			2048
+#endif
+
+#endif
+
 /*
    ------------------------------------
    ------------- Console --------------

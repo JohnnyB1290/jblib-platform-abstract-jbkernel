@@ -33,8 +33,14 @@
 #include <string.h>
 #include "jbkernel/EventTimer.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
+#if JB_LIB_PLATFORM == 3
+static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+#endif
 
 EventTimer::EventTimer(IVoidTimer* const voidTimer) : IVoidCallback()
 {
@@ -63,7 +69,7 @@ void EventTimer::voidCallback(void* const source, void* parameter)
 			EVENT_TIMER_EVENTS_SIZE * sizeof( IVoidCallback* ));
 	memcpy(tempEventsData, this->eventsData_,
 			EVENT_TIMER_EVENTS_SIZE * sizeof( void* ));
-	
+
 	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++) {
 		if(tempCallbacks[i]) {
 			this->eventsCounter_[i]++;
@@ -141,6 +147,9 @@ void EventTimer::stop(void)
 
 void EventTimer::addCyclicEvent(uint32_t periodUs, IVoidCallback* const callback, void* data)
 {
+    #if JB_LIB_PLATFORM == 3
+    static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+    #endif
 	for(uint32_t i = 0; i < EVENT_TIMER_EVENTS_SIZE; i++){
 		disableInterrupts();
 		if(this->callbacks_[i] == (IVoidCallback*)NULL){
@@ -234,6 +243,7 @@ void EventTimer::deleteEvent(IVoidCallback* const callback, void* const data)
 	}
 }
 
+}
 }
 
 #endif
