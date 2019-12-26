@@ -31,9 +31,10 @@
 #include "jbkernel/TimeEngine.hpp"
 #include "jbkernel/JbKernel.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
-
+namespace jbkernel
+{
 VoidChannelMsgQueue::VoidChannelMsgQueue(IVoidCallback* callback): IVoidCallback(), IChannelCallback()
 {
 	this->callback_ = callback;
@@ -135,4 +136,5 @@ void VoidChannelMsgQueue::channelCallback(uint8_t* const buffer, const uint16_t 
 	this->channelMsgList_.push_back(newMsg);
 }
 
+}
 }

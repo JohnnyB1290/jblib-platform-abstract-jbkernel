@@ -27,6 +27,9 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
+#include "jbkernel/jb_common.h"
+#if !JB_LIB_OS
+
 #include "jbkernel/JbKernel.hpp"
 
 
@@ -37,7 +40,6 @@ namespace jbkernel
 
 std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresList_;
 std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresDeleteList_;
-
 
 
 void JbKernel::delayMs(uint32_t ms)
@@ -184,4 +186,4 @@ uint32_t JbKernel::getHeapFreeRecursive(uint32_t step)
 
 }
 
-
+#endif

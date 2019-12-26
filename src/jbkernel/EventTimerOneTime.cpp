@@ -38,6 +38,9 @@
 namespace jblib::jbkernel
 {
 
+#if JB_LIB_PLATFORM == 3
+static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+#endif
 
 EventTimer::EventTimer(IVoidTimer* const voidTimer) : IVoidCallback()
 {

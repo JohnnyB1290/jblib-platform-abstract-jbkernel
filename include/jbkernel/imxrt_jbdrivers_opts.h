@@ -23,8 +23,8 @@
  * This file is a part of JB_Lib.
  */
 
-#ifndef LPC43XX_JBDRIVERS_OPTS_H_
-#define LPC43XX_JBDRIVERS_OPTS_H_
+#ifndef IMXRT_JBDRIVERS_OPTS_H_
+#define IMXRT_JBDRIVERS_OPTS_H_
 
 typedef struct{
 	unsigned int gpioBasePointer;
@@ -143,4 +143,4 @@ typedef struct{
 #endif
 
 
-#endif /* LPC43XX_JBDRIVERS_OPTS_H_ */
+#endif /* IMXRT_JBDRIVERS_OPTS_H_ */

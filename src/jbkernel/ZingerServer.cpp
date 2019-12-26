@@ -35,7 +35,9 @@
 
 
 
-namespace jblib::jbkernel
+namespace jblib
+{
+namespace jbkernel
 {
 
 using namespace jbutilities;
@@ -264,20 +266,18 @@ void ZingerServer::voidCallback(void* const source, void* parameter)
 							if(blockNumber >= 0){
 								MemoryBlock_t* block = &this->startParameters_.memoryBlocks[blockNumber];
 								if(block->eraseBlock){
-									WriteRequest_t request = {
-											.address = block->beginAddress,
-											.data = NULL,
-											.dataSize = (block->endAddress - block->beginAddress)
-									};
+                                    WriteRequest_t request;
+                                    request.address = block->beginAddress;
+                                    request.data = NULL;
+                                    request.dataSize = (block->endAddress - block->beginAddress);
 									this->protoParameters_.writeRequests.push_back(request);
 									block->eraseBlock = false;
 								}
 								writeAddress = writeAddress + block->recievedAddressOffset;
-								WriteRequest_t request = {
-										.address = writeAddress,
-										.data = (uint8_t*)malloc_s(stringLength),
-										.dataSize = stringLength
-								};
+                                WriteRequest_t request;
+                                request.address = writeAddress;
+                                request.data = (uint8_t*)malloc_s(stringLength);
+                                request.dataSize = stringLength;
 								if(request.data){
 									memcpy(request.data, &this->protoParameters_.inputCommand.data[4], stringLength);
 									this->protoParameters_.writeRequests.push_back(request);
@@ -706,4 +706,5 @@ void ZingerServer::disableCrypt(void)
 	}
 }
 
+}
 }

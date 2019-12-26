@@ -30,8 +30,14 @@
 
 #include "jbkernel/KernelPerformer.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
+#if JB_LIB_PLATFORM == 3
+static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+#endif
 
 KernelPerformer::KernelPerformer(IVoidTimer* const voidTimer) : EventTimer(voidTimer)
 {
@@ -119,4 +125,5 @@ void KernelPerformer::deleteEvent(IVoidCallback* const callback)
 
 }
 
+}
 }

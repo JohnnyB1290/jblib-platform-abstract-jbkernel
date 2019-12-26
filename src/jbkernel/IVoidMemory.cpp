@@ -32,8 +32,15 @@
 #include "stdio.h"
 #endif
 
-namespace jblib::jbkernel
+namespace jblib
 {
+namespace jbkernel
+{
+
+#if JB_LIB_PLATFORM == 3
+static portMUX_TYPE criticalMux = portMUX_INITIALIZER_UNLOCKED;
+#endif
+
 #if USE_FAT_FS
 using namespace jbfatfs;
 #endif
@@ -406,5 +413,4 @@ DRESULT IVoidMemory::diskIoctl(BYTE cmd, void* buff)
 #endif
 
 }
-
-
+}

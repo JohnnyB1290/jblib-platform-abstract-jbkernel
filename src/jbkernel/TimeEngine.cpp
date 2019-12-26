@@ -31,9 +31,10 @@
 #include <string.h>
 #include "jbkernel/TimeEngine.hpp"
 
-namespace jblib::jbkernel
+namespace jblib
 {
-
+namespace jbkernel
+{
 TimeEngine* TimeEngine::timeEngine_ = (TimeEngine*)NULL;
 
 
@@ -235,4 +236,5 @@ void TimeEngine::voidCallback(void* const source, void* parameter)
 	}
 }
 
+}
 }
