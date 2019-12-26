@@ -65,6 +65,7 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
+#include "esp_log.h"
 #include "freertos/semphr.h"
 #endif
 
