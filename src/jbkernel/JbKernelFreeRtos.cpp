@@ -90,15 +90,15 @@ void JbKernel::mainTaskHandler(void* listItem)
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize)
+void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
+        uint32_t stackSize, uint32_t priority)
 {
     ProceduresListItem* newItem = new ProceduresListItem;
     newItem->procedure = callback;
     newItem->parameter = parameter;
-    xTaskCreate(&mainTaskHandler, "JB_Kernel_doMain_task",
+    xTaskCreate(&mainTaskHandler, "doMain_task",
                 stackSize, newItem,
-                JBKERNEL_MAIN_TASKS_PRIORITY,
-                NULL);
+                priority,NULL);
 }
 
 
@@ -130,6 +130,13 @@ void JbKernel::addMainProcedure(IVoidCallback* callback)
 void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter)
 {
     addMainProcedure(callback, parameter, JBKERNEL_MAIN_TASKS_STACK_SIZE);
+}
+
+
+
+void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize)
+{
+    addMainProcedure(callback, parameter, stackSize, JBKERNEL_MAIN_TASKS_PRIORITY);
 }
 
 

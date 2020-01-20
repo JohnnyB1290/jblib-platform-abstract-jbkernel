@@ -84,6 +84,8 @@ public:
     static void addMainProcedure(IVoidCallback* callback);
     static void addMainProcedure(IVoidCallback* callback, void* parameter);
     static void addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize);
+    static void addMainProcedure(IVoidCallback* callback, void* parameter,
+            uint32_t stackSize, uint32_t priority);
     static void deleteMainProcedure(IVoidCallback* callback);
     static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
     static uint32_t getHeapFree(void);
