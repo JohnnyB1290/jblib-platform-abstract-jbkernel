@@ -67,6 +67,8 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #include "esp_system.h"
 #include "esp_log.h"
 #include "freertos/semphr.h"
+#define EMAC_ETH_MAX_FLEN 		1536
+typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #endif
 
 #if JB_LIB_OS == 0
