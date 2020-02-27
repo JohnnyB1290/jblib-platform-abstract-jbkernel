@@ -86,6 +86,8 @@ public:
     static void addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize);
     static void addMainProcedure(IVoidCallback* callback, void* parameter,
             uint32_t stackSize, uint32_t priority);
+    static void addMainProcedure(IVoidCallback* callback, void* parameter,
+                                 uint32_t stackSize, uint32_t priority, char* threadName);
     static void deleteMainProcedure(IVoidCallback* callback);
     static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
     static uint32_t getHeapFree(void);
@@ -104,6 +106,7 @@ private:
         void* parameter = NULL;
     }ProceduresListItem;
     static std::forward_list<ProceduresListItem> mainProceduresDeleteList_;
+    static xSemaphoreHandle deleteListAccessMutex_;
 
     static void mainTaskHandler(void* listItem);
 };

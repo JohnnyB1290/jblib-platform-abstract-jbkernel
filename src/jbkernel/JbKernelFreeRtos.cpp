@@ -37,6 +37,7 @@ namespace jbkernel
 {
 
 std::forward_list<JbKernel::ProceduresListItem> JbKernel::mainProceduresDeleteList_;
+xSemaphoreHandle JbKernel::deleteListAccessMutex_ = xSemaphoreCreateMutex();
 
 void JbKernel::delayMs(uint32_t ms)
 {
@@ -60,11 +61,10 @@ void JbKernel::delayUs(uint32_t us)
 
 void JbKernel::mainTaskHandler(void* listItem)
 {
-    static xSemaphoreHandle deleteListAccessMutex = xSemaphoreCreateMutex();
     ProceduresListItem* procedureItem = (ProceduresListItem*)listItem;
     while(1){
         bool needToDelete = false;
-        xSemaphoreTake(deleteListAccessMutex, portMAX_DELAY);
+        xSemaphoreTake(deleteListAccessMutex_, portMAX_DELAY);
         if(!mainProceduresDeleteList_.empty()){
             mainProceduresDeleteList_.remove_if([procedureItem, &needToDelete](ProceduresListItem item){
                 if((item.procedure == procedureItem->procedure) &&
@@ -76,7 +76,7 @@ void JbKernel::mainTaskHandler(void* listItem)
                     return false;
             });
         }
-        xSemaphoreGive(deleteListAccessMutex);
+        xSemaphoreGive(deleteListAccessMutex_);
         if(needToDelete){
             free_s(listItem);
             vTaskDelete(NULL);
@@ -91,12 +91,12 @@ void JbKernel::mainTaskHandler(void* listItem)
 
 
 void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
-        uint32_t stackSize, uint32_t priority)
+        uint32_t stackSize, uint32_t priority, char* threadName)
 {
     ProceduresListItem* newItem = new ProceduresListItem;
     newItem->procedure = callback;
     newItem->parameter = parameter;
-    xTaskCreate(&mainTaskHandler, "doMain_task",
+    xTaskCreate(&mainTaskHandler, threadName,
                 stackSize, newItem,
                 priority,NULL);
 }
@@ -108,7 +108,9 @@ void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
 	ProceduresListItem newItem;
 	newItem.procedure = callback;
 	newItem.parameter = parameter;
+    xSemaphoreTake(deleteListAccessMutex_, portMAX_DELAY);
 	mainProceduresDeleteList_.push_front(newItem);
+    xSemaphoreGive(deleteListAccessMutex_);
 }
 
 
@@ -137,6 +139,14 @@ void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter)
 void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize)
 {
     addMainProcedure(callback, parameter, stackSize, JBKERNEL_MAIN_TASKS_PRIORITY);
+}
+
+
+
+void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
+                                uint32_t stackSize, uint32_t priority)
+{
+    addMainProcedure(callback, parameter, stackSize, priority, (char*)"Do Main Thread");
 }
 
 
