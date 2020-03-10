@@ -90,7 +90,7 @@ void JbKernel::mainTaskHandler(void* listItem)
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
         uint32_t stackSize, uint32_t priority, char* threadName)
 {
     ProceduresListItem* newItem = new ProceduresListItem;
@@ -98,7 +98,8 @@ void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
     newItem->parameter = parameter;
     xTaskCreate(&mainTaskHandler, threadName,
                 stackSize, newItem,
-                priority,NULL);
+                priority, &newItem->taskHandle);
+    return newItem;
 }
 
 
@@ -122,31 +123,33 @@ void JbKernel::deleteMainProcedure(IVoidCallback* callback)
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback)
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback)
 {
-	addMainProcedure(callback, NULL, JBKERNEL_MAIN_TASKS_STACK_SIZE);
+	return addMainProcedure(callback, NULL, JBKERNEL_MAIN_TASKS_STACK_SIZE);
 }
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter)
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter)
 {
-    addMainProcedure(callback, parameter, JBKERNEL_MAIN_TASKS_STACK_SIZE);
+    return addMainProcedure(callback, parameter, JBKERNEL_MAIN_TASKS_STACK_SIZE);
 }
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize)
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize)
 {
-    addMainProcedure(callback, parameter, stackSize, JBKERNEL_MAIN_TASKS_PRIORITY);
+    return addMainProcedure(callback, parameter,
+            stackSize, JBKERNEL_MAIN_TASKS_PRIORITY);
 }
 
 
 
-void JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
                                 uint32_t stackSize, uint32_t priority)
 {
-    addMainProcedure(callback, parameter, stackSize, priority, (char*)"Do Main Thread");
+    return addMainProcedure(callback, parameter,
+            stackSize, priority, (char*)"Do Main Thread");
 }
 
 

@@ -79,14 +79,21 @@ private:
 class JbKernel
 {
 public:
+    typedef struct
+    {
+        IVoidCallback* procedure = NULL;
+        void* parameter = NULL;
+        TaskHandle_t taskHandle = NULL;
+    }ProceduresListItem;
+
     static void delayMs(uint32_t ms);
     static void delayUs(uint32_t us);
-    static void addMainProcedure(IVoidCallback* callback);
-    static void addMainProcedure(IVoidCallback* callback, void* parameter);
-    static void addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize);
-    static void addMainProcedure(IVoidCallback* callback, void* parameter,
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback);
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter);
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter, uint32_t stackSize);
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
             uint32_t stackSize, uint32_t priority);
-    static void addMainProcedure(IVoidCallback* callback, void* parameter,
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
                                  uint32_t stackSize, uint32_t priority, char* threadName);
     static void deleteMainProcedure(IVoidCallback* callback);
     static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
@@ -100,11 +107,6 @@ public:
 #endif
 
 private:
-    typedef struct
-    {
-        IVoidCallback* procedure = NULL;
-        void* parameter = NULL;
-    }ProceduresListItem;
     static std::forward_list<ProceduresListItem> mainProceduresDeleteList_;
     static xSemaphoreHandle deleteListAccessMutex_;
 
