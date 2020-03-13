@@ -78,6 +78,13 @@ void JbKernel::mainTaskHandler(void* listItem)
         }
         xSemaphoreGive(deleteListAccessMutex_);
         if(needToDelete){
+//            uint32_t freeStack = uxTaskGetStackHighWaterMark(NULL);
+//            if(freeStack < 1024){
+//                ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
+//            }
+//            if(freeStack > 2048){
+//                ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
+//            }
             free_s(listItem);
             vTaskDelete(NULL);
         }
@@ -85,6 +92,13 @@ void JbKernel::mainTaskHandler(void* listItem)
         if(procedureItem->procedure){
             procedureItem->procedure->voidCallback(NULL, procedureItem->parameter);
         }
+//        uint32_t freeStack = uxTaskGetStackHighWaterMark(NULL);
+//        if(freeStack < 1024){
+//            ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
+//        }
+//        if(freeStack > 2048){
+//            ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
+//        }
     }
 }
 
@@ -96,6 +110,7 @@ JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback
     ProceduresListItem* newItem = new ProceduresListItem;
     newItem->procedure = callback;
     newItem->parameter = parameter;
+    newItem->name = threadName;
     xTaskCreate(&mainTaskHandler, threadName,
                 stackSize, newItem,
                 priority, &newItem->taskHandle);

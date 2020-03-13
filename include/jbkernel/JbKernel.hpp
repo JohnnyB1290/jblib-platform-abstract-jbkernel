@@ -84,6 +84,7 @@ public:
         IVoidCallback* procedure = NULL;
         void* parameter = NULL;
         TaskHandle_t taskHandle = NULL;
+        char* name = NULL;
     }ProceduresListItem;
 
     static void delayMs(uint32_t ms);
