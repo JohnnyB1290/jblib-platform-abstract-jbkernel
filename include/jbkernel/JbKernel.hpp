@@ -66,7 +66,7 @@ public:
 private:
 	typedef struct
 	{
-		IVoidCallback* procedure = NULL;
+		IVoidCallback* procedure = nullptr;
 		void* parameter = NULL;
 	}ProceduresListItem;
 	static std::forward_list<ProceduresListItem> mainProceduresList_;
@@ -81,10 +81,10 @@ class JbKernel
 public:
     typedef struct
     {
-        IVoidCallback* procedure = NULL;
-        void* parameter = NULL;
-        TaskHandle_t taskHandle = NULL;
-        char* name = NULL;
+        IVoidCallback* procedure = nullptr;
+        void* parameter = nullptr;
+        TaskHandle_t taskHandle = nullptr;
+        char* name = nullptr;
     }ProceduresListItem;
 
     static void delayMs(uint32_t ms);

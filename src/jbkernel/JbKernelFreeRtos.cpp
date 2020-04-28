@@ -78,7 +78,7 @@ void JbKernel::mainTaskHandler(void* listItem)
         }
         xSemaphoreGive(deleteListAccessMutex_);
         if(needToDelete){
-//            uint32_t freeStack = uxTaskGetStackHighWaterMark(NULL);
+//            uint32_t freeStack = uxTaskGetStackHighWaterMark(nullptr);
 //            if(freeStack < 1024){
 //                ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
 //            }
@@ -86,13 +86,13 @@ void JbKernel::mainTaskHandler(void* listItem)
 //                ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
 //            }
             free_s(listItem);
-            vTaskDelete(NULL);
+            vTaskDelete(nullptr);
         }
 
         if(procedureItem->procedure){
-            procedureItem->procedure->voidCallback(NULL, procedureItem->parameter);
+            procedureItem->procedure->voidCallback(nullptr, procedureItem->parameter);
         }
-//        uint32_t freeStack = uxTaskGetStackHighWaterMark(NULL);
+//        uint32_t freeStack = uxTaskGetStackHighWaterMark(nullptr);
 //        if(freeStack < 1024){
 //            ESP_LOGW("Main procedures", "Free Stack for task %s: '%d'", procedureItem->name, freeStack);
 //        }
@@ -133,14 +133,14 @@ void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
 
 void JbKernel::deleteMainProcedure(IVoidCallback* callback)
 {
-	deleteMainProcedure(callback, NULL);
+	deleteMainProcedure(callback, nullptr);
 }
 
 
 
 JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback)
 {
-	return addMainProcedure(callback, NULL, JBKERNEL_MAIN_TASKS_STACK_SIZE);
+	return addMainProcedure(callback, nullptr, JBKERNEL_MAIN_TASKS_STACK_SIZE);
 }
 
 
