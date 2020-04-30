@@ -84,7 +84,7 @@ public:
         IVoidCallback* procedure = nullptr;
         void* parameter = nullptr;
         TaskHandle_t taskHandle = nullptr;
-        char* name = nullptr;
+        const char* name = nullptr;
     }ProceduresListItem;
 
     static void delayMs(uint32_t ms);
@@ -95,10 +95,10 @@ public:
     static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
             uint32_t stackSize, uint32_t priority);
     static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
-                                 uint32_t stackSize, uint32_t priority, char* threadName);
+                                 uint32_t stackSize, uint32_t priority, const char* threadName);
     static void deleteMainProcedure(IVoidCallback* callback);
     static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
-    static uint32_t getHeapFree(void);
+    static uint32_t getHeapFree();
     static uint32_t getHeapFree(uint32_t step);
 #if USE_CONSOLE
     static Console* getConsole(void)

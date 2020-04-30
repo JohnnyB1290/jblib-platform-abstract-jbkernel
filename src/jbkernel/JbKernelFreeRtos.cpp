@@ -61,8 +61,8 @@ void JbKernel::delayUs(uint32_t us)
 
 void JbKernel::mainTaskHandler(void* listItem)
 {
-    ProceduresListItem* procedureItem = (ProceduresListItem*)listItem;
-    while(1){
+    auto* procedureItem = (ProceduresListItem*)listItem;
+    while(true){
         bool needToDelete = false;
         xSemaphoreTake(deleteListAccessMutex_, portMAX_DELAY);
         if(!mainProceduresDeleteList_.empty()){
@@ -105,9 +105,9 @@ void JbKernel::mainTaskHandler(void* listItem)
 
 
 JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
-        uint32_t stackSize, uint32_t priority, char* threadName)
+        uint32_t stackSize, uint32_t priority, const char* const threadName)
 {
-    ProceduresListItem* newItem = new ProceduresListItem;
+    auto* newItem = new ProceduresListItem;
     newItem->procedure = callback;
     newItem->parameter = parameter;
     newItem->name = threadName;
@@ -164,12 +164,12 @@ JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback
                                 uint32_t stackSize, uint32_t priority)
 {
     return addMainProcedure(callback, parameter,
-            stackSize, priority, (char*)"Do Main Thread");
+            stackSize, priority, "Do Main Thread");
 }
 
 
 
-uint32_t JbKernel::getHeapFree(void)
+uint32_t JbKernel::getHeapFree()
 {
     return xPortGetFreeHeapSize();
 }

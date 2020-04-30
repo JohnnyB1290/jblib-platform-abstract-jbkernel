@@ -29,7 +29,7 @@
 #ifndef CALLBACK_INTERFACES_HPP_
 #define CALLBACK_INTERFACES_HPP_
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace jblib
 {
@@ -39,54 +39,54 @@ namespace jbkernel
 class IVoidCallback
 {
 public:
-	IVoidCallback(void){ }
-	virtual ~IVoidCallback(void){ }
-	virtual void voidCallback(void* const source, void* parameter) = 0;
+	IVoidCallback() = default;
+	virtual ~IVoidCallback() = default;
+	virtual void voidCallback(void* source, void* parameter) = 0;
 };
 
 class FunctionBindVoidCallbackImpl : public IVoidCallback
 {
 public:
-	FunctionBindVoidCallbackImpl(void (*callback)(void)) : IVoidCallback()
+	explicit FunctionBindVoidCallbackImpl(void (*callback)()) : IVoidCallback()
 	{
 		this->callback_ = callback;
 	}
 
-	virtual void voidCallback(void* const source, void* parameter)
+	void voidCallback(void* const source, void* parameter) override
 	{
-		if(this->callback_ != NULL)
+		if(this->callback_ != nullptr)
 			this->callback_();
 	}
 
 private:
-	void (*callback_)(void) = NULL;
+	void (*callback_)() = nullptr;
 };
 
 class FunctionWithParametersBindVoidCallbackImpl : public IVoidCallback
 {
 public:
-	FunctionWithParametersBindVoidCallbackImpl(void (*callback)(void* parameter)) : IVoidCallback()
+	explicit FunctionWithParametersBindVoidCallbackImpl(void (*callback)(void* parameter)) : IVoidCallback()
 	{
 		this->callback_ = callback;
 	}
 
-	virtual void voidCallback(void* const source, void* parameter)
+	void voidCallback(void* const source, void* parameter) override
 	{
-		if(this->callback_ != NULL)
+		if(this->callback_ != nullptr)
 			this->callback_(parameter);
 	}
 
 private:
-	void (*callback_)(void* parameter) = NULL;
+	void (*callback_)(void* parameter) = nullptr;
 };
 
 class IChannelCallback
 {
 public:
-	IChannelCallback(void){}
-	virtual ~IChannelCallback(void){}
-	virtual void channelCallback(uint8_t* const buffer, const uint16_t size,
-			void* const source, void* parameter) = 0;
+	IChannelCallback()  = default;
+	virtual ~IChannelCallback() = default;
+	virtual void channelCallback(uint8_t* buffer, uint16_t size,
+			void* source, void* parameter) = 0;
 };
 
 
