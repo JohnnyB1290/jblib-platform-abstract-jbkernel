@@ -65,13 +65,13 @@ namespace jblib
             }
             virtual void invokeCallback(void* source)
             {
-                if(callback_ != nullptr){
+                if(this->callback_ != nullptr){
                     this->callback_(source, this->callbackParameter_);
                 }
             }
             virtual void invokeCallback(void* source, void* parameter)
             {
-                if(callback_ != nullptr){
+                if(this->callback_ != nullptr){
                     this->callback_(source, parameter);
                 }
             }
