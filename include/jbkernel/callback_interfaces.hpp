@@ -7,7 +7,7 @@
  * bind with C functions and static methods.
  *
  * @note
- * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
+ * Copyright © 2019-2020 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
  * All rights reserved.
  * @note
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,80 +26,68 @@
  * This file is a part of JB_Lib.
  */
 
-#ifndef CALLBACK_INTERFACES_HPP_
-#define CALLBACK_INTERFACES_HPP_
+#pragma once
 
-#include <cstdint>
 #include <functional>
 
 namespace jblib
 {
-namespace jbkernel
-{
-
-class IVoidCallback
-{
-public:
-    IVoidCallback() = default;
-    template <class T>
-    explicit IVoidCallback(T callback) : callback_(callback){}
-    virtual ~IVoidCallback() = default;
-    virtual void voidCallback(void* source, void* parameter)
+    namespace jbkernel
     {
-        callback_(source, parameter);
+        class IVoidCallback
+        {
+        public:
+            IVoidCallback() = default;
+            virtual ~IVoidCallback() = default;
+            virtual void voidCallback(void* source, void* parameter) = 0;
+            virtual void operator()(void* source, void* parameter){
+                this->voidCallback(source, parameter);
+            }
+        };
+
+        class CallbackCaller
+        {
+        public:
+            CallbackCaller() = default;
+            virtual ~CallbackCaller() = default;
+            template<typename Callback>
+            void addCallback(Callback&& callback, void* parameter = nullptr){
+                this->callback_ = std::forward<Callback>(callback);
+                this->callbackParameter_ = parameter;
+            }
+            template<typename Callback>
+            void addCallback(Callback* callback, void* parameter = nullptr){
+                this->addCallback(*callback, parameter);
+            }
+            virtual void removeCallback(){
+                this->callback_ = nullptr;
+                this->callbackParameter_ = nullptr;
+            }
+            virtual void invokeCallback(void* source)
+            {
+                if(callback_ != nullptr){
+                    this->callback_(source, this->callbackParameter_);
+                }
+            }
+            virtual void invokeCallback(void* source, void* parameter)
+            {
+                if(callback_ != nullptr){
+                    this->callback_(source, parameter);
+                }
+            }
+
+        protected:
+            std::function<void(void*,void*)> callback_ = nullptr;
+            void* callbackParameter_ = nullptr;
+        };
+
+        class IChannelCallback
+        {
+        public:
+            IChannelCallback()  = default;
+            virtual ~IChannelCallback() = default;
+            virtual void channelCallback(uint8_t* buffer, uint16_t size,
+                    void* source, void* parameter) = 0;
+        };
     }
-
-protected:
-    std::function<void(void*,void*)> callback_;
-};
-
-class FunctionBindVoidCallbackImpl : public IVoidCallback
-{
-public:
-	explicit FunctionBindVoidCallbackImpl(void (*callback)()) : IVoidCallback()
-	{
-		this->callback_ = callback;
-	}
-
-	void voidCallback(void* const source, void* parameter) override
-	{
-		if(this->callback_ != nullptr)
-			this->callback_();
-	}
-
-private:
-	void (*callback_)() = nullptr;
-};
-
-class FunctionWithParametersBindVoidCallbackImpl : public IVoidCallback
-{
-public:
-	explicit FunctionWithParametersBindVoidCallbackImpl(void (*callback)(void* parameter)) : IVoidCallback()
-	{
-		this->callback_ = callback;
-	}
-
-	void voidCallback(void* const source, void* parameter) override
-	{
-		if(this->callback_ != nullptr)
-			this->callback_(parameter);
-	}
-
-private:
-	void (*callback_)(void* parameter) = nullptr;
-};
-
-class IChannelCallback
-{
-public:
-	IChannelCallback()  = default;
-	virtual ~IChannelCallback() = default;
-	virtual void channelCallback(uint8_t* buffer, uint16_t size,
-			void* source, void* parameter) = 0;
-};
-
-
 }
-}
-
-#endif /* CALLBACK_INTERFACES_HPP_ */

@@ -32,10 +32,10 @@ namespace jblib
 {
     namespace jbkernel
     {
-        class IVoidTimer
+        class IVoidTimer : public CallbackCaller
         {
         public:
-            IVoidTimer() = default;
+            IVoidTimer() : CallbackCaller(){};
             virtual ~IVoidTimer() = default;
             virtual void initialize(uint32_t periodUs) = 0;
             virtual void initializeTicks(uint32_t periodTicks){}
@@ -49,9 +49,6 @@ namespace jblib
             virtual void setUsecCounter(uint32_t us){}
             virtual void changePeriod(uint32_t periodUs){};
             virtual void changePeriodTicks(uint32_t periodTicks){};
-            virtual void addCallback(IVoidCallback* callback) = 0;
-            virtual void addCallback(IVoidCallback* callback, void* parameter){};
-            virtual void deleteCallback() = 0;
         };
     }
 }
