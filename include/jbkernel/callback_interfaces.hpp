@@ -30,6 +30,7 @@
 #define CALLBACK_INTERFACES_HPP_
 
 #include <cstdint>
+#include <functional>
 
 namespace jblib
 {
@@ -39,9 +40,17 @@ namespace jbkernel
 class IVoidCallback
 {
 public:
-	IVoidCallback() = default;
-	virtual ~IVoidCallback() = default;
-	virtual void voidCallback(void* source, void* parameter) = 0;
+    IVoidCallback() = default;
+    template <class T>
+    explicit IVoidCallback(T callback) : callback_(callback){}
+    virtual ~IVoidCallback() = default;
+    virtual void voidCallback(void* source, void* parameter)
+    {
+        callback_(source, parameter);
+    }
+
+protected:
+    std::function<void(void*,void*)> callback_;
 };
 
 class FunctionBindVoidCallbackImpl : public IVoidCallback

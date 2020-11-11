@@ -5,7 +5,7 @@
  * Description of void timer interface
  *
  * @note
- * Copyright © 2019 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
+ * Copyright © 2019-2020 Evgeniy Ivanov. Contacts: <strelok1290@gmail.com>
  * All rights reserved.
  * @note
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,38 +24,34 @@
  * This file is a part of JB_Lib.
  */
 
-#ifndef IVOIDTIMER_HPP_
-#define IVOIDTIMER_HPP_
+#pragma once
 
-#include <stdint.h>
 #include "jbkernel/callback_interfaces.hpp"
 
 namespace jblib
 {
-namespace jbkernel
-{
-
-class IVoidTimer
-{
-public:
-	IVoidTimer(void){}
-	virtual ~IVoidTimer(void){}
-	virtual void initialize(uint32_t us) = 0;
-	virtual void start(void) = 0;
-	virtual void stop(void) = 0;
-	virtual void reset(void) = 0;
-	virtual uint32_t getCounter(void) = 0;
-	virtual uint32_t getUsecCounter(void)
-	{
-		return 0;
-	}
-	virtual void setCounter(uint32_t count) = 0;
-	virtual void addCallback(IVoidCallback* const callback) = 0;
-	virtual void deleteCallback(void) = 0;
-	virtual void deinitialize(void) = 0;
-};
-
+    namespace jbkernel
+    {
+        class IVoidTimer
+        {
+        public:
+            IVoidTimer() = default;
+            virtual ~IVoidTimer() = default;
+            virtual void initialize(uint32_t periodUs) = 0;
+            virtual void initializeTicks(uint32_t periodTicks){}
+            virtual void deinitialize() = 0;
+            virtual void start() = 0;
+            virtual void stop() = 0;
+            virtual void reset() = 0;
+            virtual uint32_t getCounter() = 0;
+            virtual uint32_t getUsecCounter(){ return 0; }
+            virtual void setCounter(uint32_t ticks) = 0;
+            virtual void setUsecCounter(uint32_t us){}
+            virtual void changePeriod(uint32_t periodUs){};
+            virtual void changePeriodTicks(uint32_t periodTicks){};
+            virtual void addCallback(IVoidCallback* callback) = 0;
+            virtual void addCallback(IVoidCallback* callback, void* parameter){};
+            virtual void deleteCallback() = 0;
+        };
+    }
 }
-}
-
-#endif /* IVOIDTIMER_HPP_ */
