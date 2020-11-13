@@ -51,8 +51,13 @@ namespace jblib
             CallbackCaller() = default;
             virtual ~CallbackCaller() = default;
             template<typename Callback>
+            void addCallback(Callback& callback, void* parameter = nullptr){
+                this->callback_ = std::ref(callback);
+                this->callbackParameter_ = parameter;
+            }
+            template<typename Callback>
             void addCallback(Callback&& callback, void* parameter = nullptr){
-                this->callback_ = std::forward<Callback>(callback);
+                this->callback_ = callback;
                 this->callbackParameter_ = parameter;
             }
             template<typename Callback>
