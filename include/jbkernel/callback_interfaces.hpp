@@ -45,6 +45,26 @@ namespace jblib
             }
         };
 
+        class VoidCallback : public IVoidCallback
+        {
+        public:
+            VoidCallback() = default;
+            template <class T>
+            explicit VoidCallback(T& callback) : IVoidCallback(), callback_(std::ref(callback)) {}
+            template <class T>
+            explicit VoidCallback(T&& callback) : IVoidCallback(), callback_(callback) {}
+            ~VoidCallback() override = default;
+            void voidCallback(void* source, void* parameter) override
+            {
+                if(callback_ != nullptr){
+                    callback_(source, parameter);
+                }
+            }
+
+        protected:
+            std::function<void(void*,void*)> callback_ = nullptr;
+        };
+
         class CallbackCaller
         {
         public:
