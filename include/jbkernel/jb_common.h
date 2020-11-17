@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include "jbkernel/jbopt.h"
 
+
 #if JB_LIB_PLATFORM == 0  //LPC43XX
 #include "chip.h"
 #elif JB_LIB_PLATFORM == 1  //ZYNQ
@@ -67,6 +68,9 @@ typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #include "esp_system.h"
 #include "esp_log.h"
 #include "freertos/semphr.h"
+#ifndef ESP_IDF_VERSION
+#include "esp_idf_version.h"
+#endif
 #define EMAC_ETH_MAX_FLEN 		1536
 typedef uint8_t EthernetFrame[EMAC_ETH_MAX_FLEN];
 #endif
