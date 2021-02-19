@@ -111,8 +111,31 @@ namespace jblib
         public:
             IChannelCallback()  = default;
             virtual ~IChannelCallback() = default;
-            virtual void channelCallback(uint8_t* buffer, uint16_t size,
-                    void* source, void* parameter) = 0;
+            virtual void channelCallback(uint8_t* data, uint16_t size, void* source, void* connectionParameter) = 0;
+            virtual void operator()(uint8_t* data, uint16_t size, void* source, void* connectionParameter) {
+                this->channelCallback(data, size, source, connectionParameter);
+            }
         };
+
+        class ChannelCallback : public IChannelCallback
+        {
+        public:
+            ChannelCallback() = default;
+            template <class T>
+            explicit ChannelCallback(T& callback) : IChannelCallback(), callback_(std::ref(callback)) {}
+            template <class T>
+            explicit ChannelCallback(T&& callback) : IChannelCallback(), callback_(callback) {}
+            ~ChannelCallback() override = default;
+            void channelCallback(uint8_t* data, uint16_t size, void* source, void* connectionParameter) override
+            {
+                if(callback_ != nullptr){
+                    this->callback_(data, size, source, connectionParameter);
+                }
+            }
+
+        protected:
+            std::function<void(uint8_t*,uint16_t,void*,void*)> callback_ = nullptr;
+        };
+
     }
 }
