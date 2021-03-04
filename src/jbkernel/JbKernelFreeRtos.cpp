@@ -104,6 +104,21 @@ JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback
 }
 
 
+#if JB_LIB_PLATFORM == 3
+JbKernel::ProceduresListItem* JbKernel::addMainProcedure(IVoidCallback* callback, void* parameter,
+        uint32_t stackSize, uint32_t priority, const char* threadName, int coreId)
+{
+    auto* newItem = new ProceduresListItem;
+    newItem->procedure = callback;
+    newItem->parameter = parameter;
+    newItem->name = threadName;
+    xTaskCreatePinnedToCore(&mainTaskHandler, threadName,
+                stackSize, newItem,
+                priority, &newItem->taskHandle, coreId);
+    return newItem;
+}
+#endif
+
 
 void JbKernel::deleteMainProcedure(IVoidCallback* callback, void* parameter)
 {

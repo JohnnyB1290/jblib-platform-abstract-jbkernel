@@ -96,6 +96,10 @@ public:
             uint32_t stackSize, uint32_t priority);
     static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
                                  uint32_t stackSize, uint32_t priority, const char* threadName);
+    #if JB_LIB_PLATFORM == 3
+    static ProceduresListItem* addMainProcedure(IVoidCallback* callback, void* parameter,
+            uint32_t stackSize, uint32_t priority, const char* threadName, int coreId);
+    #endif
     static void deleteMainProcedure(IVoidCallback* callback);
     static void deleteMainProcedure(IVoidCallback* callback, void* parameter);
     static uint32_t getHeapFree();
